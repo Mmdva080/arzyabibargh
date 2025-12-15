@@ -2,151 +2,68 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ارزیابی برقکار">
+    <meta name="application-name" content="ارزیابی برقکار">
+
+    <!-- آیکون ساده (بدون وابستگی خارجی) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%233b82f6'/%3E%3Ctext x='50' y='60' font-size='50' text-anchor='middle' fill='white'%3E⚡%3C/text%3E%3C/svg%3E" sizes="any">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%233b82f6'/%3E%3Ctext x='50' y='60' font-size='50' text-anchor='middle' fill='white'%3E⚡%3C/text%3E%3C/svg%3E">
+
     <title>فرم ارزیابی برقکار</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase SDK جدید (نسخه 10 modular) برای جلوگیری از مشکلات CORS در فایل محلی -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        window.firebaseApp = initializeApp;
+        window.getFirestore = getFirestore;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.getDocs = getDocs;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.limit = limit;
+    </script>
     <!-- jsPDF + html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <style>
-        body {
-            font-family: 'Tahoma', 'Vazir', sans-serif;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            min-height: 100vh;
-            color: #1e293b;
-        }
-        .container {
-            max-width: 960px;
-            margin: 1.5rem auto;
-            padding: 1rem;
-        }
-        .card {
-            background: white;
-            border-radius: 1.5rem;
-            padding: 1.8rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-        }
-        h1 {
-            font-size: 2rem;
-            font-weight: bold;
-            text-align: center;
-            color: #1e40af;
-            margin-bottom: 2rem;
-        }
-        h2 {
-            font-size: 1.4rem;
-            color: #1e40af;
-            border-bottom: 2px solid #3b82f6;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.2rem;
-        }
-        label {
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.95rem;
-            margin-bottom: 0.4rem;
-            display: block;
-        }
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 0.65rem 0.9rem;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 0.75rem;
-            background: #f8fafc;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-        }
-        .radio-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-top: 0.4rem;
-        }
-        .radio-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: #eff6ff;
-            padding: 0.5rem 1rem;
-            border-radius: 0.75rem;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-        .radio-item:hover {
-            background: #dbeafe;
-        }
-        button {
-            background: #3b82f6;
-            color: white;
-            padding: 0.75rem 1.8rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(59,130,246,0.3);
-            transition: all 0.3s;
-        }
-        button:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-        }
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 0.5rem;
-        }
-        th {
-            background: #dbeafe;
-            padding: 0.75rem;
-            text-align: center;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        td {
-            background: #f8fafc;
-            padding: 0.75rem;
-            border-radius: 0.75rem;
-        }
-        .history-item {
-            background: #f8fafc;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            border-right: 4px solid #3b82f6;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-        .history-item:hover {
-            background: #eff6ff;
-        }
-        .alert {
-            background: #fef2f2;
-            color: #991b1b;
-            padding: 0.75rem;
-            border-radius: 0.75rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border: 1px solid #fecaca;
-        }
+        body { font-family: 'Tahoma', 'Vazir', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); min-height: 100vh; color: #1e293b; margin: 0; }
+        .container { max-width: 960px; margin: 1rem auto; padding: 0.75rem; }
+        .card { background: white; border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        h1 { font-size: 1.9rem; font-weight: bold; text-align: center; color: #1e40af; margin: 1.5rem 0; }
+        h2 { font-size: 1.35rem; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        label { font-weight: 600; color: #475569; font-size: 0.95rem; margin-bottom: 0.4rem; display: block; }
+        input[type="text"], textarea { width: 100%; padding: 0.65rem 0.9rem; border: 1.5px solid #cbd5e1; border-radius: 0.75rem; background: #f8fafc; font-size: 0.95rem; }
+        input:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+        .radio-group { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 0.4rem; }
+        .radio-item { display: flex; align-items: center; gap: 0.5rem; background: #eff6ff; padding: 0.5rem 1rem; border-radius: 0.75rem; font-size: 0.9rem; }
+        button { background: #3b82f6; color: white; padding: 0.8rem 1.8rem; border-radius: 0.75rem; font-weight: 600; font-size: 1rem; box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+        button:hover { background: #2563eb; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 0.5rem; }
+        th { background: #dbeafe; padding: 0.75rem; text-align: center; font-size: 0.9rem; font-weight: 600; }
+        td { background: #f8fafc; padding: 0.75rem; border-radius: 0.75rem; }
+        .history-item { background: #f8fafc; padding: 1rem; border-radius: 0.75rem; border-right: 4px solid #3b82f6; font-size: 0.95rem; }
+        .alert { background: #fef2f2; color: #991b1b; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.9rem; font-weight: 600; border: 1px solid #fecaca; }
+        .total-input { background: #dbeafe; font-weight: bold; color: #1e40af; }
         @media (max-width: 768px) {
-            .container { padding: 0.75rem; margin: 1rem auto; }
+            .container { padding: 0.5rem; margin: 0.5rem auto; }
             .card { padding: 1.2rem; }
-            h1 { font-size: 1.75rem; }
-            h2 { font-size: 1.3rem; }
-            .radio-group { gap: 0.6rem; }
-            .radio-item { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+            h1 { font-size: 1.7rem; }
+            h2 { font-size: 1.25rem; }
+            .radio-item { padding: 0.45rem 0.8rem; font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="pdf-content">
         <h1>فرم ارزیابی برقکار</h1>
 
         <form id="evaluation-form" class="card">
@@ -154,38 +71,20 @@
             <div>
                 <h2>بخش ۱ | اطلاعات عمومی</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label>نام و نام خانوادگی برقکار</label>
-                        <input type="text" id="electrician_name" required>
-                    </div>
-                    <div>
-                        <label>کد عضویت / شماره تماس</label>
-                        <input type="text" id="membership_code">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label>نشانی پروژه مورد بازدید</label>
-                        <input type="text" id="project_address">
-                    </div>
-                    <div>
-                        <label>نوع پروژه</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="project_type" value="مسکونی"><span>مسکونی</span></div>
-                            <div class="radio-item"><input type="radio" name="project_type" value="تجاری"><span>تجاری</span></div>
-                            <div class="radio-item"><input type="radio" name="project_type" value="اداری"><span>اداری</span></div>
-                            <div class="radio-item"><input type="radio" name="project_type" value="صنعتی سبک"><span>صنعتی سبک</span></div>
-                        </div>
-                    </div>
-                    <div>
-                        <label>وضعیت پروژه</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="project_status" value="در حال اجرا"><span>در حال اجرا</span></div>
-                            <div class="radio-item"><input type="radio" name="project_status" value="تکمیل‌شده"><span>تکمیل‌شده (حداکثر ۶ ماه گذشته)</span></div>
-                        </div>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label>تاریخ بازدید</label>
-                        <input type="text" id="visit_date" placeholder="۱۴۰۴/۰۹/۲۴">
-                    </div>
+                    <div><label>نام و نام خانوادگی برقکار</label><input type="text" id="electrician_name" required></div>
+                    <div><label>کد عضویت / شماره تماس</label><input type="text" id="membership_code"></div>
+                    <div class="md:col-span-2"><label>نشانی پروژه مورد بازدید</label><input type="text" id="project_address"></div>
+                    <div><label>نوع پروژه</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="project_type" value="مسکونی"><span>مسکونی</span></div>
+                        <div class="radio-item"><input type="radio" name="project_type" value="تجاری"><span>تجاری</span></div>
+                        <div class="radio-item"><input type="radio" name="project_type" value="اداری"><span>اداری</span></div>
+                        <div class="radio-item"><input type="radio" name="project_type" value="صنعتی سبک"><span>صنعتی سبک</span></div>
+                    </div></div>
+                    <div><label>وضعیت پروژه</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="project_status" value="در حال اجرا"><span>در حال اجرا</span></div>
+                        <div class="radio-item"><input type="radio" name="project_status" value="تکمیل‌شده"><span>تکمیل‌شده</span></div>
+                    </div></div>
+                    <div class="md:col-span-2"><label>تاریخ و ساعت بازدید</label><input type="text" id="visit_datetime" readonly></div>
                 </div>
             </div>
 
@@ -194,9 +93,7 @@
                 <h2>بخش ۲ | مشخصات ارزیابان</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div><label>نام ارزیاب اول</label><input type="text" id="evaluator1_name" required></div>
-                    <div><label>امضا ارزیاب اول</label><input type="text" id="evaluator1_sign"></div>
                     <div><label>نام ارزیاب دوم</label><input type="text" id="evaluator2_name" required></div>
-                    <div><label>امضا ارزیاب دوم</label><input type="text" id="evaluator2_sign"></div>
                 </div>
                 <div class="alert mt-4">⛔ ارزیابی باید حتماً توسط دو نفر انجام شود.</div>
             </div>
@@ -205,210 +102,106 @@
             <div class="mt-10">
                 <h2>بخش ۳ | ارزیابی فنی و اجرایی (۳۰ امتیاز)</h2>
                 <table>
-                    <thead>
-                        <tr><th>ردیف</th><th>شاخص</th><th colspan="6">امتیاز (۰ تا ۵)</th></tr>
-                    </thead>
+                    <thead><tr><th>ردیف</th><th>شاخص</th><th colspan="6">امتیاز (۰ تا ۵)</th></tr></thead>
                     <tbody>
                         <tr><td>۱</td><td>رعایت اصول سیم‌کشی</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech1" value="0">۰</div>
-                            <div class="radio-item"><input type="radio" name="tech1" value="1">۱</div>
-                            <div class="radio-item"><input type="radio" name="tech1" value="2">۲</div>
-                            <div class="radio-item"><input type="radio" name="tech1" value="3">۳</div>
-                            <div class="radio-item"><input type="radio" name="tech1" value="4">۴</div>
-                            <div class="radio-item"><input type="radio" name="tech1" value="5">۵</div>
+                            <div class="radio-item"><input type="radio" name="tech1" value="0">۰</div><div class="radio-item"><input type="radio" name="tech1" value="1">۱</div><div class="radio-item"><input type="radio" name="tech1" value="2">۲</div><div class="radio-item"><input type="radio" name="tech1" value="3">۳</div><div class="radio-item"><input type="radio" name="tech1" value="4">۴</div><div class="radio-item"><input type="radio" name="tech1" value="5">۵</div>
                         </td></tr>
                         <tr><td>۲</td><td>کیفیت تابلو برق</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech2" value="0">۰</div>
-                            <div class="radio-item"><input type="radio" name="tech2" value="1">۱</div>
-                            <div class="radio-item"><input type="radio" name="tech2" value="2">۲</div>
-                            <div class="radio-item"><input type="radio" name="tech2" value="3">۳</div>
-                            <div class="radio-item"><input type="radio" name="tech2" value="4">۴</div>
-                            <div class="radio-item"><input type="radio" name="tech2" value="5">۵</div>
+                            <div class="radio-item"><input type="radio" name="tech2" value="0">۰</div><div class="radio-item"><input type="radio" name="tech2" value="1">۱</div><div class="radio-item"><input type="radio" name="tech2" value="2">۲</div><div class="radio-item"><input type="radio" name="tech2" value="3">۳</div><div class="radio-item"><input type="radio" name="tech2" value="4">۴</div><div class="radio-item"><input type="radio" name="tech2" value="5">۵</div>
                         </td></tr>
                         <tr><td>۳</td><td>ایمنی اجرا (اتصالات، ارت، حفاظت)</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech3" value="0">۰</div>
-                            <div class="radio-item"><input type="radio" name="tech3" value="1">۱</div>
-                            <div class="radio-item"><input type="radio" name="tech3" value="2">۲</div>
-                            <div class="radio-item"><input type="radio" name="tech3" value="3">۳</div>
-                            <div class="radio-item"><input type="radio" name="tech3" value="4">۴</div>
-                            <div class="radio-item"><input type="radio" name="tech3" value="5">۵</div>
+                            <div class="radio-item"><input type="radio" name="tech3" value="0">۰</div><div class="radio-item"><input type="radio" name="tech3" value="1">۱</div><div class="radio-item"><input type="radio" name="tech3" value="2">۲</div><div class="radio-item"><input type="radio" name="tech3" value="3">۳</div><div class="radio-item"><input type="radio" name="tech3" value="4">۴</div><div class="radio-item"><input type="radio" name="tech3" value="5">۵</div>
                         </td></tr>
                         <tr><td>۴</td><td>نظم، تمیزی و زیبایی کار</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech4" value="0">۰</div>
-                            <div class="radio-item"><input type="radio" name="tech4" value="1">۱</div>
-                            <div class="radio-item"><input type="radio" name="tech4" value="2">۲</div>
-                            <div class="radio-item"><input type="radio" name="tech4" value="3">۳</div>
-                            <div class="radio-item"><input type="radio" name="tech4" value="4">۴</div>
-                            <div class="radio-item"><input type="radio" name="tech4" value="5">۵</div>
+                            <div class="radio-item"><input type="radio" name="tech4" value="0">۰</div><div class="radio-item"><input type="radio" name="tech4" value="1">۱</div><div class="radio-item"><input type="radio" name="tech4" value="2">۲</div><div class="radio-item"><input type="radio" name="tech4" value="3">۳</div><div class="radio-item"><input type="radio" name="tech4" value="4">۴</div><div class="radio-item"><input type="radio" name="tech4" value="5">۵</div>
                         </td></tr>
                         <tr><td>۵</td><td>رعایت حداقل‌های مبحث ۱۳</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech5" value="0">۰</div>
-                            <div class="radio-item"><input type="radio" name="tech5" value="1">۱</div>
-                            <div class="radio-item"><input type="radio" name="tech5" value="2">۲</div>
-                            <div class="radio-item"><input type="radio" name="tech5" value="3">۳</div>
-                            <div class="radio-item"><input type="radio" name="tech5" value="4">۴</div>
-                            <div class="radio-item"><input type="radio" name="tech5" value="5">۵</div>
+                            <div class="radio-item"><input type="radio" name="tech5" value="0">۰</div><div class="radio-item"><input type="radio" name="tech5" value="1">۱</div><div class="radio-item"><input type="radio" name="tech5" value="2">۲</div><div class="radio-item"><input type="radio" name="tech5" value="3">۳</div><div class="radio-item"><input type="radio" name="tech5" value="4">۴</div><div class="radio-item"><input type="radio" name="tech5" value="5">۵</div>
                         </td></tr>
                     </tbody>
                 </table>
-                <div class="mt-5">
-                    <label>جمع امتیاز این بخش (از ۳۰)</label>
-                    <input type="text" id="section3_total">
-                </div>
+                <div class="mt-5"><label>جمع امتیاز این بخش (از ۳۰)</label><input type="text" id="section3_total" class="total-input" readonly></div>
             </div>
 
             <!-- بخش ۴ -->
             <div class="mt-10">
                 <h2>بخش ۴ | رعایت نرخنامه و اصول صنفی (۲۰ امتیاز)</h2>
                 <table>
-                    <thead>
-                        <tr><th>ردیف</th><th>مورد بررسی</th><th>وضعیت</th></tr>
-                    </thead>
+                    <thead><tr><th>ردیف</th><th>مورد بررسی</th><th>وضعیت</th></tr></thead>
                     <tbody>
-                        <tr><td>۱</td><td>قرارداد یا توافق مشخص دارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule1" value="بله">بله</div><div class="radio-item"><input type="radio" name="rule1" value="خیر">خیر</div></td></tr>
-                        <tr><td>۲</td><td>قیمت مطابق نرخنامه کمیته</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule2" value="بله">بله</div><div class="radio-item"><input type="radio" name="rule2" value="خیر">خیر</div></td></tr>
-                        <tr><td>۳</td><td>عدم قیمت‌شکنی</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule3" value="بله">بله</div><div class="radio-item"><input type="radio" name="rule3" value="خیر">خیر</div></td></tr>
-                        <tr><td>۴</td><td>شکایت مالی ثبت‌شده ندارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule4" value="بله">بله</div><div class="radio-item"><input type="radio" name="rule4" value="خیر">خیر</div></td></tr>
+                        <tr><td>۱</td><td>قرارداد یا توافق مشخص دارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule1" value="5">بله</div><div class="radio-item"><input type="radio" name="rule1" value="0">خیر</div></td></tr>
+                        <tr><td>۲</td><td>قیمت مطابق نرخنامه کمیته</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule2" value="5">بله</div><div class="radio-item"><input type="radio" name="rule2" value="0">خیر</div></td></tr>
+                        <tr><td>۳</td><td>عدم قیمت‌شکنی</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule3" value="5">بله</div><div class="radio-item"><input type="radio" name="rule3" value="0">خیر</div></td></tr>
+                        <tr><td>۴</td><td>شکایت مالی ثبت‌شده ندارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule4" value="5">بله</div><div class="radio-item"><input type="radio" name="rule4" value="0">خیر</div></td></tr>
                     </tbody>
                 </table>
-                <div class="mt-5">
-                    <label>امتیاز این بخش (۰ تا ۲۰)</label>
-                    <input type="text" id="section4_total">
-                </div>
+                <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section4_total" class="total-input" readonly></div>
             </div>
 
-            <!-- بخش ۵ -->
+            <!-- بخش ۵ (فقط کیفیت کلی اجرا باقی مانده) -->
             <div class="mt-10">
-                <h2>بخش ۵ | نمونه پروژه و کیفیت عملکرد اخیر (۱۵ امتیاز)</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div>
-                        <label>کیفیت کلی اجرا</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="quality" value="ضعیف">ضعیف</div>
-                            <div class="radio-item"><input type="radio" name="quality" value="متوسط">متوسط</div>
-                            <div class="radio-item"><input type="radio" name="quality" value="خوب">خوب</div>
-                            <div class="radio-item"><input type="radio" name="quality" value="عالی">عالی</div>
-                        </div>
-                    </div>
-                    <div>
-                        <label>رضایت کارفرما</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="satisfaction" value="ضعیف">ضعیف</div>
-                            <div class="radio-item"><input type="radio" name="satisfaction" value="متوسط">متوسط</div>
-                            <div class="radio-item"><input type="radio" name="satisfaction" value="خوب">خوب</div>
-                        </div>
-                    </div>
-                    <div>
-                        <label>مستندات (عکس / توضیح)</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="docs" value="دارد">دارد</div>
-                            <div class="radio-item"><input type="radio" name="docs" value="ندارد">ندارد</div>
-                        </div>
-                    </div>
+                <h2>بخش ۵ | کیفیت کلی اجرا (۱۵ امتیاز)</h2>
+                <div class="grid grid-cols-1 gap-5">
+                    <div><label>کیفیت کلی اجرا</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="quality" value="0">ضعیف</div>
+                        <div class="radio-item"><input type="radio" name="quality" value="5">متوسط</div>
+                        <div class="radio-item"><input type="radio" name="quality" value="10">خوب</div>
+                        <div class="radio-item"><input type="radio" name="quality" value="15">عالی</div>
+                    </div></div>
                 </div>
-                <div class="mt-5">
-                    <label>امتیاز این بخش (۰ تا ۱۵)</label>
-                    <input type="text" id="section5_total">
-                </div>
+                <div class="mt-5"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section5_total" class="total-input" readonly></div>
             </div>
 
             <!-- بخش ۶ -->
             <div class="mt-10">
                 <h2>بخش ۶ | سابقه و تجربه کاری (۲۰ امتیاز)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label>سابقه کاری اعلام‌شده (سال)</label>
-                        <input type="text" id="experience_years">
-                    </div>
-                    <div>
-                        <label>سطح تجربه</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="exp_level" value="کمتر از ۵ سال">کمتر از ۵ سال</div>
-                            <div class="radio-item"><input type="radio" name="exp_level" value="۵ تا ۱۰ سال">۵ تا ۱۰ سال</div>
-                            <div class="radio-item"><input type="radio" name="exp_level" value="۱۰ تا ۲۰ سال">۱۰ تا ۲۰ سال</div>
-                            <div class="radio-item"><input type="radio" name="exp_level" value="بیش از ۲۰ سال">بیش از ۲۰ سال</div>
-                        </div>
-                    </div>
+                    <div><label>سابقه کاری اعلام‌شده (سال)</label><input type="text" id="experience_years"></div>
+                    <div><label>سطح تجربه</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="exp_level" value="5">کمتر از ۵ سال</div>
+                        <div class="radio-item"><input type="radio" name="exp_level" value="10">۵ تا ۱۰ سال</div>
+                        <div class="radio-item"><input type="radio" name="exp_level" value="15">۱۰ تا ۲۰ سال</div>
+                        <div class="radio-item"><input type="radio" name="exp_level" value="20">بیش از ۲۰ سال</div>
+                    </div></div>
                 </div>
-                <div class="mt-5">
-                    <label>امتیاز این بخش (۰ تا ۲۰)</label>
-                    <input type="text" id="section6_total">
-                </div>
+                <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section6_total" class="total-input" readonly></div>
             </div>
 
-            <!-- بخش ۷ -->
+            <!-- بخش ۷ (فقط همکاری با کمیته، رفتار حرفه‌ای و سابقه شکایت) -->
             <div class="mt-10">
                 <h2>بخش ۷ | اعتبار حرفه‌ای و همکاری صنفی (۱۵ امتیاز)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div>
-                        <label>خوش‌قولی و تعهد کاری</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="commitment" value="ضعیف">ضعیف</div>
-                            <div class="radio-item"><input type="radio" name="commitment" value="متوسط">متوسط</div>
-                            <div class="radio-item"><input type="radio" name="commitment" value="خوب">خوب</div>
-                        </div>
-                    </div>
-                    <div>
-                        <label>همکاری با کمیته</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="cooperation" value="ضعیف">ضعیف</div>
-                            <div class="radio-item"><input type="radio" name="cooperation" value="متوسط">متوسط</div>
-                            <div class="radio-item"><input type="radio" name="cooperation" value="خوب">خوب</div>
-                        </div>
-                    </div>
-                    <div>
-                        <label>رفتار حرفه‌ای در کارگاه</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="behavior" value="ضعیف">ضعیف</div>
-                            <div class="radio-item"><input type="radio" name="behavior" value="متوسط">متوسط</div>
-                            <div class="radio-item"><input type="radio" name="behavior" value="خوب">خوب</div>
-                        </div>
-                    </div>
+                    <div><label>همکاری با کمیته</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="cooperation" value="0">ضعیف</div>
+                        <div class="radio-item"><input type="radio" name="cooperation" value="3">متوسط</div>
+                        <div class="radio-item"><input type="radio" name="cooperation" value="5">خوب</div>
+                    </div></div>
+                    <div><label>رفتار حرفه‌ای در کارگاه</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="behavior" value="0">ضعیف</div>
+                        <div class="radio-item"><input type="radio" name="behavior" value="3">متوسط</div>
+                        <div class="radio-item"><input type="radio" name="behavior" value="5">خوب</div>
+                    </div></div>
+                    <div><label>سابقه شکایت</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="complaint" value="0">دارد</div>
+                        <div class="radio-item"><input type="radio" name="complaint" value="5">ندارد</div>
+                    </div></div>
                 </div>
-                <div class="mt-5">
-                    <label>سابقه شکایت</label>
-                    <div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="complaint" value="دارد">دارد</div>
-                        <div class="radio-item"><input type="radio" name="complaint" value="ندارد">ندارد</div>
-                    </div>
-                </div>
-                <div class="mt-5">
-                    <label>امتیاز این بخش (۰ تا ۱۵)</label>
-                    <input type="text" id="section7_total">
-                </div>
+                <div class="mt-5"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section7_total" class="total-input" readonly></div>
             </div>
 
             <!-- بخش ۸ -->
             <div class="mt-10">
                 <h2>بخش ۸ | جمع‌بندی نهایی</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label>جمع کل امتیازات (از ۱۰۰)</label>
-                        <input type="text" id="total_score">
-                    </div>
-                    <div>
-                        <label>رتبه پیشنهادی</label>
-                        <div class="radio-group">
-                            <div class="radio-item"><input type="radio" name="rank" value="A">A</div>
-                            <div class="radio-item"><input type="radio" name="rank" value="B">B</div>
-                            <div class="radio-item"><input type="radio" name="rank" value="C">C</div>
-                        </div>
-                    </div>
+                    <div><label>جمع کل امتیازات (از ۱۰۰)</label><input type="text" id="total_score" class="total-input" readonly></div>
+                    <div><label>رتبه پیشنهادی</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="rank" value="A">A</div>
+                        <div class="radio-item"><input type="radio" name="rank" value="B">B</div>
+                        <div class="radio-item"><input type="radio" name="rank" value="C">C</div>
+                    </div></div>
                 </div>
-                <div class="mt-5">
-                    <label>نظر تکمیلی ارزیابان</label>
-                    <textarea rows="4" id="comments"></textarea>
-                </div>
-            </div>
-
-            <!-- بخش ۹ -->
-            <div class="mt-10">
-                <h2>بخش ۹ | تأیید نهایی</h2>
-                <p class="mb-4 text-gray-700">اینجانب صحت بازدید میدانی و امتیازدهی فوق را تأیید می‌کنم.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div><label>امضای ارزیاب اول</label><input type="text" id="final_sign1"></div>
-                    <div><label>امضای ارزیاب دوم</label><input type="text" id="final_sign2"></div>
-                </div>
+                <div class="mt-5"><label>نظر تکمیلی ارزیابان</label><textarea rows="4" id="comments"></textarea></div>
             </div>
 
             <div class="text-center mt-12 space-x-6">
@@ -417,7 +210,6 @@
             </div>
         </form>
 
-        <!-- تاریخچه -->
         <div class="card">
             <h2>تاریخچه ارزیابی‌ها</h2>
             <div id="loading" class="text-center py-6 text-blue-600 font-medium">در حال بارگذاری...</div>
@@ -425,8 +217,11 @@
         </div>
     </div>
 
-    <script>
-        // ==== فقط این قسمت را با اطلاعات Firebase خودت جایگزین کن ====
+    <script type="module">
+        // Firebase نسخه جدید (modular) – مشکل CORS در فایل محلی رو حل می‌کنه وقتی روی سرور آپلود بشه
+        const { firebaseApp, getFirestore, collection, addDoc, getDocs, query, orderBy, limit } = window;
+
+        // ==== حتماً این قسمت رو با اطلاعات پروژه Firebase خودت جایگزین کن ====
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "your-project.firebaseapp.com",
@@ -435,79 +230,149 @@
             messagingSenderId: "123456789",
             appId: "1:123456789:web:abcdef123456"
         };
-        // ===================================================================
+        // =====================================================================
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const evaluationsRef = db.collection("evaluations");
+        const app = firebaseApp(firebaseConfig);
+        const db = getFirestore(app);
+        const evaluationsRef = collection(db, "evaluations");
 
-        function loadHistory() {
-            document.getElementById('loading').style.display = 'block';
-            evaluationsRef.orderBy("timestamp", "desc").limit(30).get().then((snapshot) => {
+        // تاریخ و ساعت فعلی
+        function updateDateTime() {
+            const now = new Date();
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            document.getElementById('visit_datetime').value = now.toLocaleString('fa-IR', options);
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000); // هر ثانیه بروزرسانی
+
+        // محاسبه خودکار امتیازات
+        function calculateScores() {
+            // بخش ۳
+            let s3 = 0;
+            for (let i = 1; i <= 5; i++) {
+                const val = document.querySelector(`input[name="tech${i}"]:checked`);
+                s3 += val ? parseInt(val.value) : 0;
+            }
+            document.getElementById('section3_total').value = s3;
+
+            // بخش ۴
+            let s4 = 0;
+            for (let i = 1; i <= 4; i++) {
+                const val = document.querySelector(`input[name="rule${i}"]:checked`);
+                s4 += val ? parseInt(val.value) : 0;
+            }
+            document.getElementById('section4_total').value = s4;
+
+            // بخش ۵ (فقط کیفیت)
+            const quality = document.querySelector('input[name="quality"]:checked');
+            document.getElementById('section5_total').value = quality ? parseInt(quality.value) : 0;
+
+            // بخش ۶
+            const exp = document.querySelector('input[name="exp_level"]:checked');
+            document.getElementById('section6_total').value = exp ? parseInt(exp.value) : 0;
+
+            // بخش ۷
+            let s7 = 0;
+            ['cooperation', 'behavior', 'complaint'].forEach(name => {
+                const val = document.querySelector(`input[name="${name}"]:checked`);
+                s7 += val ? parseInt(val.value) : 0;
+            });
+            document.getElementById('section7_total').value = s7;
+
+            // جمع کل
+            const total = s3 + s4 + (quality ? parseInt(quality.value) : 0) + (exp ? parseInt(exp.value) : 0) + s7;
+            document.getElementById('total_score').value = total;
+        }
+
+        document.querySelectorAll('input[type="radio"]').forEach(input => {
+            input.addEventListener('change', calculateScores);
+        });
+
+        // بارگذاری تاریخچه
+        async function loadHistory() {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+            try {
+                const q = query(evaluationsRef, orderBy("timestamp", "desc"), limit(50));
+                const snapshot = await getDocs(q);
                 const list = document.getElementById('history-list');
                 list.innerHTML = '';
                 if (snapshot.empty) {
-                    list.innerHTML = '<p class="text-center text-gray-500 py-6">هنوز ارزیابی‌ای ثبت نشده است.</p>';
+                    list.innerHTML = '<p class="text-center text-gray-500 py-6">هنوز ارزیابی ثبت نشده است.</p>';
                 }
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const div = document.createElement('div');
                     div.className = 'history-item';
-                    div.innerHTML = `
-                        <strong>${data.timestamp || '—'}</strong><br>
-                        برقکار: <strong>${data.electrician_name || '—'}</strong> 
-                        | امتیاز کل: <strong>${data.total_score || '—'}</strong>
-                        | رتبه: <strong>${data.rank || '—'}</strong>
-                    `;
+                    div.innerHTML = `<strong>${data.timestamp || '—'}</strong><br>برقکار: <strong>${data.electrician_name || '—'}</strong> | امتیاز: <strong>${data.total_score || '—'}</strong> | رتبه: <strong>${data.rank || '—'}</strong>`;
                     list.appendChild(div);
                 });
-                document.getElementById('loading').style.display = 'none';
-            }).catch(err => {
+            } catch (err) {
                 console.error(err);
-                alert("خطا در بارگذاری تاریخچه");
-            });
+                alert('خطا در بارگذاری تاریخچه. اینترنت را چک کنید یا Firebase config را بررسی کنید.');
+            }
+            loading.style.display = 'none';
         }
 
-        document.getElementById('save-btn').addEventListener('click', () => {
+        // ذخیره
+        document.getElementById('save-btn').addEventListener('click', async () => {
+            calculateScores();
             const data = {
-                electrician_name: document.getElementById('electrician_name').value || '',
-                membership_code: document.getElementById('membership_code').value || '',
-                project_address: document.getElementById('project_address').value || '',
+                electrician_name: document.getElementById('electrician_name').value.trim(),
+                membership_code: document.getElementById('membership_code').value,
+                project_address: document.getElementById('project_address').value,
                 project_type: document.querySelector('input[name="project_type"]:checked')?.value || '',
                 project_status: document.querySelector('input[name="project_status"]:checked')?.value || '',
-                visit_date: document.getElementById('visit_date').value || '',
-                evaluator1_name: document.getElementById('evaluator1_name').value || '',
-                evaluator2_name: document.getElementById('evaluator2_name').value || '',
-                section3_total: document.getElementById('section3_total').value || '',
-                section4_total: document.getElementById('section4_total').value || '',
-                section5_total: document.getElementById('section5_total').value || '',
-                section6_total: document.getElementById('section6_total').value || '',
-                section7_total: document.getElementById('section7_total').value || '',
-                total_score: document.getElementById('total_score').value || '',
+                visit_datetime: document.getElementById('visit_datetime').value,
+                evaluator1_name: document.getElementById('evaluator1_name').value,
+                evaluator2_name: document.getElementById('evaluator2_name').value,
+                section3_total: document.getElementById('section3_total').value,
+                section4_total: document.getElementById('section4_total').value,
+                section5_total: document.getElementById('section5_total').value,
+                section6_total: document.getElementById('section6_total').value,
+                section7_total: document.getElementById('section7_total').value,
+                total_score: document.getElementById('total_score').value,
                 rank: document.querySelector('input[name="rank"]:checked')?.value || '',
-                comments: document.getElementById('comments').value || '',
+                comments: document.getElementById('comments').value,
                 timestamp: new Date().toLocaleString('fa-IR')
             };
 
-            evaluationsRef.add(data).then(() => {
+            try {
+                await addDoc(evaluationsRef, data);
                 alert('ارزیابی با موفقیت ذخیره شد 💙');
                 loadHistory();
                 document.getElementById('evaluation-form').reset();
-            }).catch(err => {
+                updateDateTime();
+                calculateScores();
+            } catch (err) {
                 alert('خطا در ذخیره: ' + err.message);
-            });
+            }
         });
 
-        document.getElementById('pdf-btn').addEventListener('click', () => {
+        // PDF
+        document.getElementById('pdf-btn').addEventListener('click', async () => {
+            window.scrollTo(0, 0);
+            const element = document.getElementById('pdf-content');
+            const canvas = await html2canvas(element, { scale: 2, useCORS: true, scrollY: -window.scrollY });
             const { jsPDF } = window.jspdf;
-            html2canvas(document.querySelector('.container'), {scale: 2}).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const width = pdf.internal.pageSize.getWidth();
-                const height = (canvas.height * width) / canvas.width;
-                pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-                pdf.save('ارزیابی_برقکار_' + new Date().toLocaleDateString('fa-IR') + '.pdf');
-            });
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(canvas, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(canvas, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            pdf.save('ارزیابی_برقکار_' + new Date().toLocaleDateString('fa-IR') + '.pdf');
         });
 
         loadHistory();
