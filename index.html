@@ -22,38 +22,41 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
-        body { font-family: 'Vazirmatn', 'Tahoma', sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; color: #1e293b; margin: 0; }
-        .container { max-width: 1000px; margin: 1.5rem auto; padding: 1rem; }
-        .card { background: white; border-radius: 2rem; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.15); transition: transform 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        h1 { font-size: 2.5rem; font-weight: 700; text-align: center; color: white; text-shadow: 0 4px 15px rgba(0,0,0,0.3); margin: 2rem 0; }
-        h2 { font-size: 1.6rem; font-weight: 600; color: #1e40af; border-bottom: 4px solid #3b82f6; padding-bottom: 0.75rem; margin-bottom: 1.5rem; position: relative; }
-        h2::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 80px; height: 4px; background: #3b82f6; border-radius: 2px; }
-        label { font-weight: 600; color: #374151; font-size: 1rem; margin-bottom: 0.5rem; display: block; }
-        input[type="text"], textarea { width: 100%; padding: 0.9rem 1.2rem; border: 2px solid #e2e8f0; border-radius: 1rem; background: #f8fafc; font-size: 1rem; transition: all 0.3s; }
-        input:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59,130,246,0.2); }
-        .radio-group { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; }
-        .radio-item { display: flex; align-items: center; gap: 0.7rem; background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 0.8rem 1.4rem; border-radius: 1.5rem; font-size: 1rem; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .radio-item:hover { background: #bfdbfe; transform: translateY(-3px); }
-        button { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 1rem 2.5rem; border-radius: 2rem; font-weight: 700; font-size: 1.1rem; box-shadow: 0 10px 25px rgba(59,130,246,0.4); transition: all 0.4s; position: relative; overflow: hidden; }
-        button:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(59,130,246,0.5); }
-        button:active { transform: translateY(0); }
-        button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.6s; }
+        body { font-family: 'Vazirmatn', 'Tahoma', sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; color: #1e293b; margin: 0; padding: 0; }
+        .container { max-width: 1100px; margin: 2rem auto; padding: 1rem; }
+        .card { background: white; border-radius: 2rem; padding: 2.5rem; margin-bottom: 2.5rem; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transition: all 0.4s ease; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.25); }
+        h1 { font-size: 3rem; font-weight: 800; text-align: center; color: white; text-shadow: 0 6px 20px rgba(0,0,0,0.4); margin: 2rem 0 3rem; }
+        h2 { font-size: 1.8rem; font-weight: 700; color: #1e40af; border-bottom: 5px solid #3b82f6; padding-bottom: 1rem; margin-bottom: 2rem; position: relative; }
+        h2::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100px; height: 5px; background: #3b82f6; border-radius: 3px; }
+        label { font-weight: 600; color: #374151; font-size: 1.1rem; margin-bottom: 0.8rem; display: block; }
+        input[type="text"], textarea { width: 100%; padding: 1rem 1.4rem; border: 2px solid #e2e8f0; border-radius: 1.5rem; background: #f8fafc; font-size: 1.1rem; transition: all 0.3s; }
+        input:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 5px rgba(59,130,246,0.3); }
+        .radio-group { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 0.8rem; }
+        .radio-item { display: flex; align-items: center; gap: 0.8rem; background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 1rem 1.8rem; border-radius: 2rem; font-size: 1.1rem; transition: all 0.4s; box-shadow: 0 6px 15px rgba(0,0,0,0.08); cursor: pointer; }
+        .radio-item:hover { background: linear-gradient(135deg, #bfdbfe, #93c5fd); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        button { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 1.2rem 3rem; border-radius: 3rem; font-weight: 700; font-size: 1.3rem; box-shadow: 0 12px 30px rgba(59,130,246,0.5); transition: all 0.4s; position: relative; overflow: hidden; }
+        button:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(59,130,246,0.6); }
+        button:active { transform: translateY(-2px); }
+        button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.7s; }
         button:hover::before { left: 100%; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 1rem; }
-        th { background: linear-gradient(to right, #dbeafe, #bfdbfe); padding: 1rem; text-align: center; font-weight: 700; font-size: 1rem; border-radius: 1rem; }
-        td { background: #f8fafc; padding: 1rem; border-radius: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .history-item { background: linear-gradient(to right, #f8fafc, #eff6ff); padding: 1.5rem; border-radius: 1.5rem; border-right: 6px solid #3b82f6; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .history-item:hover { transform: translateX(-10px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
-        .total-input { background: linear-gradient(to right, #dbeafe, #bfdbfe); font-weight: bold; color: #1e40af; font-size: 1.1rem; }
-        .alert { background: linear-gradient(to right, #fee2e2, #fecaca); color: #991b1b; padding: 1rem; border-radius: 1rem; font-weight: 600; border-right: 5px solid #ef4444; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 1.2rem; }
+        th { background: linear-gradient(to right, #dbeafe, #bfdbfe); padding: 1.2rem; text-align: center; font-weight: 700; font-size: 1.1rem; border-radius: 1.5rem; }
+        td { background: #f8fafc; padding: 1.2rem; border-radius: 1.5rem; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+        .history-item { background: linear-gradient(to right, #f8fafc, #eff6ff); padding: 2rem; border-radius: 2rem; border-right: 8px solid #3b82f6; cursor: pointer; transition: all 0.4s; box-shadow: 0 10px 25px rgba(0,0,0,0.12); }
+        .history-item:hover { transform: translateX(-15px); box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+        .total-input { background: linear-gradient(to right, #dbeafe, #93c5fd); font-weight: bold; color: #1e40af; font-size: 1.3rem; text-align: center; }
+        .alert { background: linear-gradient(to right, #fee2e2, #fecaca); color: #991b1b; padding: 1.2rem; border-radius: 1.5rem; font-weight: 700; border-right: 6px solid #ef4444; }
+        .action-btn { padding: 0.8rem 1.8rem; border-radius: 2rem; font-weight: 600; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .edit-btn { background: linear-gradient(to right, #10b981, #34d399); }
+        .delete-btn { background: linear-gradient(to right, #ef4444, #f87171); }
         @media (max-width: 768px) {
             .container { padding: 1rem; margin: 1rem auto; }
-            .card { padding: 1.5rem; border-radius: 1.5rem; }
-            h1 { font-size: 2.2rem; }
-            h2 { font-size: 1.5rem; }
-            button { padding: 1rem 2rem; font-size: 1rem; }
-            .radio-item { padding: 0.7rem 1.2rem; font-size: 0.95rem; }
+            .card { padding: 1.8rem; border-radius: 1.8rem; }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.6rem; }
+            button { padding: 1rem 2.5rem; font-size: 1.2rem; }
+            .radio-item { padding: 0.9rem 1.5rem; font-size: 1rem; }
         }
     </style>
 </head>
@@ -62,25 +65,160 @@
         <h1>فرم ارزیابی برقکار</h1>
 
         <form id="evaluation-form" class="card">
-            <!-- بخش‌های ۱ تا ۸ مثل قبل با طراحی خفن‌تر -->
-            <!-- (کد کامل بخش‌ها همان قبلی است، فقط استایل‌ها ارتقا یافت) -->
+            <!-- بخش ۱ -->
+            <div>
+                <h2>بخش ۱ | اطلاعات عمومی</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label>نام و نام خانوادگی برقکار</label><input type="text" id="electrician_name" required></div>
+                    <div><label>کد عضویت / شماره تماس</label><input type="text" id="membership_code"></div>
+                    <div class="md:col-span-2"><label>نشانی پروژه مورد بازدید</label><input type="text" id="project_address"></div>
+                    <div><label>نوع پروژه</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="project_type" value="مسکونی"><span>مسکونی</span></div>
+                        <div class="radio-item"><input type="radio" name="project_type" value="تجاری"><span>تجاری</span></div>
+                        <div class="radio-item"><input type="radio" name="project_type" value="اداری"><span>اداری</span></div>
+                        <div class="radio-item"><input type="radio" name="project_type" value="صنعتی سبک"><span>صنعتی سبک</span></div>
+                    </div></div>
+                    <div><label>وضعیت پروژه</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="project_status" value="در حال اجرا"><span>در حال اجرا</span></div>
+                        <div class="radio-item"><input type="radio" name="project_status" value="تکمیل‌شده"><span>تکمیل‌شده (حداکثر ۶ ماه گذشته)</span></div>
+                    </div></div>
+                    <div class="md:col-span-2"><label>تاریخ و ساعت بازدید</label><input type="text" id="visit_datetime" class="total-input" readonly></div>
+                </div>
+            </div>
 
-            <div class="text-center mt-12 space-x-8">
-                <button type="button" id="save-btn">ذخیره ارزیابی</button>
-                <button type="button" id="pdf-btn">دانلود PDF</button>
+            <!-- بخش ۲ -->
+            <div class="mt-12">
+                <h2>بخش ۲ | مشخصات ارزیابان</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label>نام ارزیاب اول</label><input type="text" id="evaluator1_name" required></div>
+                    <div><label>نام ارزیاب دوم</label><input type="text" id="evaluator2_name" required></div>
+                </div>
+                <div class="alert mt-6">⛔ ارزیابی باید حتماً توسط دو نفر انجام شود.</div>
+            </div>
+
+            <!-- بخش ۳ -->
+            <div class="mt-12">
+                <h2>بخش ۳ | ارزیابی فنی و اجرایی (۳۰ امتیاز)</h2>
+                <table>
+                    <thead><tr><th>ردیف</th><th>شاخص</th><th colspan="6">امتیاز (۰ تا ۵)</th></tr></thead>
+                    <tbody>
+                        <tr><td>۱</td><td>رعایت اصول سیم‌کشی</td><td class="radio-group">
+                            <div class="radio-item"><input type="radio" name="tech1" value="0">۰</div><div class="radio-item"><input type="radio" name="tech1" value="1">۱</div><div class="radio-item"><input type="radio" name="tech1" value="2">۲</div><div class="radio-item"><input type="radio" name="tech1" value="3">۳</div><div class="radio-item"><input type="radio" name="tech1" value="4">۴</div><div class="radio-item"><input type="radio" name="tech1" value="5">۵</div>
+                        </td></tr>
+                        <tr><td>۲</td><td>کیفیت تابلو برق</td><td class="radio-group">
+                            <div class="radio-item"><input type="radio" name="tech2" value="0">۰</div><div class="radio-item"><input type="radio" name="tech2" value="1">۱</div><div class="radio-item"><input type="radio" name="tech2" value="2">۲</div><div class="radio-item"><input type="radio" name="tech2" value="3">۳</div><div class="radio-item"><input type="radio" name="tech2" value="4">۴</div><div class="radio-item"><input type="radio" name="tech2" value="5">۵</div>
+                        </td></tr>
+                        <tr><td>۳</td><td>ایمنی اجرا (اتصالات، ارت، حفاظت)</td><td class="radio-group">
+                            <div class="radio-item"><input type="radio" name="tech3" value="0">۰</div><div class="radio-item"><input type="radio" name="tech3" value="1">۱</div><div class="radio-item"><input type="radio" name="tech3" value="2">۲</div><div class="radio-item"><input type="radio" name="tech3" value="3">۳</div><div class="radio-item"><input type="radio" name="tech3" value="4">۴</div><div class="radio-item"><input type="radio" name="tech3" value="5">۵</div>
+                        </td></tr>
+                        <tr><td>۴</td><td>نظم، تمیزی و زیبایی کار</td><td class="radio-group">
+                            <div class="radio-item"><input type="radio" name="tech4" value="0">۰</div><div class="radio-item"><input type="radio" name="tech4" value="1">۱</div><div class="radio-item"><input type="radio" name="tech4" value="2">۲</div><div class="radio-item"><input type="radio" name="tech4" value="3">۳</div><div class="radio-item"><input type="radio" name="tech4" value="4">۴</div><div class="radio-item"><input type="radio" name="tech4" value="5">۵</div>
+                        </td></tr>
+                        <tr><td>۵</td><td>رعایت حداقل‌های مبحث ۱۳</td><td class="radio-group">
+                            <div class="radio-item"><input type="radio" name="tech5" value="0">۰</div><div class="radio-item"><input type="radio" name="tech5" value="1">۱</div><div class="radio-item"><input type="radio" name="tech5" value="2">۲</div><div class="radio-item"><input type="radio" name="tech5" value="3">۳</div><div class="radio-item"><input type="radio" name="tech5" value="4">۴</div><div class="radio-item"><input type="radio" name="tech5" value="5">۵</div>
+                        </td></tr>
+                    </tbody>
+                </table>
+                <div class="mt-6"><label>جمع امتیاز این بخش (از ۳۰)</label><input type="text" id="section3_total" class="total-input" readonly></div>
+            </div>
+
+            <!-- بخش ۴ -->
+            <div class="mt-12">
+                <h2>بخش ۴ | رعایت نرخنامه و اصول صنفی (۲۰ امتیاز)</h2>
+                <table>
+                    <thead><tr><th>ردیف</th><th>مورد بررسی</th><th>وضعیت</th></tr></thead>
+                    <tbody>
+                        <tr><td>۱</td><td>قرارداد یا توافق مشخص دارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule1" value="5">بله</div><div class="radio-item"><input type="radio" name="rule1" value="0">خیر</div></td></tr>
+                        <tr><td>۲</td><td>قیمت مطابق نرخنامه کمیته</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule2" value="5">بله</div><div class="radio-item"><input type="radio" name="rule2" value="0">خیر</div></td></tr>
+                        <tr><td>۳</td><td>عدم قیمت‌شکنی</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule3" value="5">بله</div><div class="radio-item"><input type="radio" name="rule3" value="0">خیر</div></td></tr>
+                        <tr><td>۴</td><td>شکایت مالی ثبت‌شده ندارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule4" value="5">بله</div><div class="radio-item"><input type="radio" name="rule4" value="0">خیر</div></td></tr>
+                    </tbody>
+                </table>
+                <div class="mt-6"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section4_total" class="total-input" readonly></div>
+            </div>
+
+            <!-- بخش ۵ (فقط کیفیت کلی اجرا) -->
+            <div class="mt-12">
+                <h2>بخش ۵ | کیفیت کلی اجرا (۱۵ امتیاز)</h2>
+                <div class="grid grid-cols-1 gap-6">
+                    <div><label>کیفیت کلی اجرا</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="quality" value="0">ضعیف</div>
+                        <div class="radio-item"><input type="radio" name="quality" value="5">متوسط</div>
+                        <div class="radio-item"><input type="radio" name="quality" value="10">خوب</div>
+                        <div class="radio-item"><input type="radio" name="quality" value="15">عالی</div>
+                    </div></div>
+                </div>
+                <div class="mt-6"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section5_total" class="total-input" readonly></div>
+            </div>
+
+            <!-- بخش ۶ -->
+            <div class="mt-12">
+                <h2>بخش ۶ | سابقه و تجربه کاری (۲۰ امتیاز)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label>سابقه کاری اعلام‌شده (سال)</label><input type="text" id="experience_years"></div>
+                    <div><label>سطح تجربه</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="exp_level" value="5">کمتر از ۵ سال</div>
+                        <div class="radio-item"><input type="radio" name="exp_level" value="10">۵ تا ۱۰ سال</div>
+                        <div class="radio-item"><input type="radio" name="exp_level" value="15">۱۰ تا ۲۰ سال</div>
+                        <div class="radio-item"><input type="radio" name="exp_level" value="20">بیش از ۲۰ سال</div>
+                    </div></div>
+                </div>
+                <div class="mt-6"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section6_total" class="total-input" readonly></div>
+            </div>
+
+            <!-- بخش ۷ -->
+            <div class="mt-12">
+                <h2>بخش ۷ | اعتبار حرفه‌ای و همکاری صنفی (۱۵ امتیاز)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div><label>همکاری با کمیته</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="cooperation" value="0">ضعیف</div>
+                        <div class="radio-item"><input type="radio" name="cooperation" value="3">متوسط</div>
+                        <div class="radio-item"><input type="radio" name="cooperation" value="5">خوب</div>
+                    </div></div>
+                    <div><label>رفتار حرفه‌ای در کارگاه</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="behavior" value="0">ضعیف</div>
+                        <div class="radio-item"><input type="radio" name="behavior" value="3">متوسط</div>
+                        <div class="radio-item"><input type="radio" name="behavior" value="5">خوب</div>
+                    </div></div>
+                    <div><label>سابقه شکایت</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="complaint" value="0">دارد</div>
+                        <div class="radio-item"><input type="radio" name="complaint" value="5">ندارد</div>
+                    </div></div>
+                </div>
+                <div class="mt-6"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section7_total" class="total-input" readonly></div>
+            </div>
+
+            <!-- بخش ۸ -->
+            <div class="mt-12">
+                <h2>بخش ۸ | جمع‌بندی نهایی</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label>جمع کل امتیازات (از ۱۰۰)</label><input type="text" id="total_score" class="total-input" readonly></div>
+                    <div><label>رتبه پیشنهادی</label><div class="radio-group">
+                        <div class="radio-item"><input type="radio" name="rank" value="A">A</div>
+                        <div class="radio-item"><input type="radio" name="rank" value="B">B</div>
+                        <div class="radio-item"><input type="radio" name="rank" value="C">C</div>
+                    </div></div>
+                </div>
+                <div class="mt-6"><label>نظر تکمیلی ارزیابان</label><textarea rows="5" id="comments"></textarea></div>
+            </div>
+
+            <div class="text-center mt-16 space-x-10">
+                <button type="button" id="save-btn">ذخیره / بروزرسانی ارزیابی</button>
+                <button type="button" id="pdf-btn">دانلود PDF کامل</button>
             </div>
         </form>
 
+        <!-- تاریخچه -->
         <div class="card">
             <h2>تاریخچه ارزیابی‌ها</h2>
-            <div id="loading" class="text-center py-8 text-blue-600 text-xl font-bold">در حال بارگذاری...</div>
-            <div id="history-list" class="space-y-6"></div>
+            <div id="loading" class="text-center py-10 text-white text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 rounded-2rem">در حال بارگذاری...</div>
+            <div id="history-list" class="space-y-8"></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // ==== Firebase Config خودت رو اینجا بگذار ====
         const firebaseConfig = {
@@ -96,8 +234,9 @@
         const db = getFirestore(app);
         const evaluationsRef = collection(db, "evaluations");
 
-        let currentDocId = null; // برای ویرایش
+        let currentEditId = null; // برای تشخیص ویرایش
 
+        // بروزرسانی تاریخ و ساعت
         function updateDateTime() {
             const now = new Date();
             document.getElementById('visit_datetime').value = now.toLocaleString('fa-IR');
@@ -105,130 +244,189 @@
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
-        // محاسبه امتیازات (همان قبلی)
+        // محاسبه امتیازات خودکار
         function calculateScores() {
-            // ... (کد محاسبه همان قبلی)
+            let s3 = 0;
+            for (let i = 1; i <= 5; i++) {
+                const val = document.querySelector(`input[name="tech${i}"]:checked`);
+                s3 += val ? parseInt(val.value) : 0;
+            }
+            document.getElementById('section3_total').value = s3;
+
+            let s4 = 0;
+            for (let i = 1; i <= 4; i++) {
+                const val = document.querySelector(`input[name="rule${i}"]:checked`);
+                s4 += val ? parseInt(val.value) : 0;
+            }
+            document.getElementById('section4_total').value = s4;
+
+            const quality = document.querySelector('input[name="quality"]:checked');
+            document.getElementById('section5_total').value = quality ? parseInt(quality.value) : 0;
+
+            const exp = document.querySelector('input[name="exp_level"]:checked');
+            document.getElementById('section6_total').value = exp ? parseInt(exp.value) : 0;
+
+            let s7 = 0;
+            ['cooperation', 'behavior', 'complaint'].forEach(name => {
+                const val = document.querySelector(`input[name="${name}"]:checked`);
+                s7 += val ? parseInt(val.value) : 0;
+            });
+            document.getElementById('section7_total').value = s7;
+
+            const total = s3 + s4 + (quality ? parseInt(quality.value) : 0) + (exp ? parseInt(exp.value) : 0) + s7;
+            document.getElementById('total_score').value = total;
         }
+
         document.querySelectorAll('input[type="radio"]').forEach(el => el.addEventListener('change', calculateScores));
 
-        // بارگذاری تاریخچه با قابلیت کلیک و ویرایش
+        // پر کردن فرم برای ویرایش
+        function fillForm(data, id) {
+            document.getElementById('electrician_name').value = data.electrician_name || '';
+            document.getElementById('membership_code').value = data.membership_code || '';
+            document.getElementById('project_address').value = data.project_address || '';
+            document.querySelector(`input[name="project_type"][value="${data.project_type}"]`)?.click();
+            document.querySelector(`input[name="project_status"][value="${data.project_status}"]`)?.click();
+            document.getElementById('evaluator1_name').value = data.evaluator1_name || '';
+            document.getElementById('evaluator2_name').value = data.evaluator2_name || '';
+            for (let i = 1; i <= 5; i++) document.querySelector(`input[name="tech${i}"][value="${data[`tech${i}`] || 0}"]`)?.click();
+            for (let i = 1; i <= 4; i++) document.querySelector(`input[name="rule${i}"][value="${data[`rule${i}`] || 0}"]`)?.click();
+            document.querySelector(`input[name="quality"][value="${data.quality || 0}"]`)?.click();
+            document.querySelector(`input[name="exp_level"][value="${data.exp_level || 0}"]`)?.click();
+            document.querySelector(`input[name="cooperation"][value="${data.cooperation || 0}"]`)?.click();
+            document.querySelector(`input[name="behavior"][value="${data.behavior || 0}"]`)?.click();
+            document.querySelector(`input[name="complaint"][value="${data.complaint || 0}"]`)?.click();
+            document.querySelector(`input[name="rank"][value="${data.rank}"]`)?.click();
+            document.getElementById('comments').value = data.comments || '';
+            calculateScores();
+            currentEditId = id;
+        }
+
+        // بارگذاری تاریخچه
         async function loadHistory() {
-            const loading = document.getElementById('loading');
-            loading.style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
             try {
                 const q = query(evaluationsRef, orderBy("timestamp", "desc"));
                 const snapshot = await getDocs(q);
                 const list = document.getElementById('history-list');
                 list.innerHTML = '';
                 if (snapshot.empty) {
-                    list.innerHTML = '<p class="text-center text-gray-500 py-8 text-lg">هنوز ارزیابی ثبت نشده است.</p>';
+                    list.innerHTML = '<p class="text-center text-gray-600 py-10 text-xl">هنوز هیچ ارزیابی ثبت نشده است.</p>';
                 }
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
                     const div = document.createElement('div');
                     div.className = 'history-item';
                     div.innerHTML = `
-                        <div class="flex justify-between items-center">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
                             <div>
-                                <strong class="text-xl">${data.electrician_name || 'بدون نام'}</strong><br>
-                                <span class="text-gray-600">امتیاز: ${data.total_score || '—'} | رتبه: ${data.rank || '—'} | ${data.timestamp || '—'}</span>
+                                <div class="text-2xl font-bold text-blue-700">${data.electrician_name || 'نامشخص'}</div>
+                                <div class="text-gray-600 mt-2">امتیاز کل: <strong>${data.total_score || '—'}</strong> | رتبه: <strong>${data.rank || '—'}</strong> | ${data.timestamp || '—'}</div>
                             </div>
-                            <div class="space-x-4">
-                                <button class="edit-btn bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-lg" data-id="${docSnap.id}">ویرایش</button>
-                                <button class="delete-btn bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full shadow-lg" data-id="${docSnap.id}">حذف</button>
+                            <div class="flex gap-4">
+                                <button class="action-btn edit-btn text-white px-8 py-4" data-id="${docSnap.id}">ویرایش</button>
+                                <button class="action-btn delete-btn text-white px-8 py-4" data-id="${docSnap.id}">حذف</button>
                             </div>
                         </div>
                     `;
                     list.appendChild(div);
                 });
 
-                // دکمه ویرایش
+                // دکمه‌های ویرایش و حذف
                 document.querySelectorAll('.edit-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const id = e.target.dataset.id;
+                    btn.addEventListener('click', async () => {
+                        const id = btn.dataset.id;
                         const docSnap = await getDoc(doc(db, "evaluations", id));
-                        const data = docSnap.data();
-                        fillForm(data);
-                        currentDocId = id;
+                        fillForm(docSnap.data(), id);
                         window.scrollTo(0, 0);
-                        alert('فرم با اطلاعات این ارزیابی پر شد. تغییرات را اعمال کنید و دوباره ذخیره بزنید.');
+                        alert('فرم برای ویرایش پر شد. تغییرات را اعمال کنید و ذخیره بزنید.');
                     });
                 });
 
-                // دکمه حذف
                 document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        if (confirm('مطمئنید می‌خواهید این ارزیابی را حذف کنید؟')) {
-                            await deleteDoc(doc(db, "evaluations", e.target.dataset.id));
+                    btn.addEventListener('click', async () => {
+                        if (confirm('مطمئنید که می‌خواهید این ارزیابی را حذف کنید؟')) {
+                            await deleteDoc(doc(db, "evaluations", btn.dataset.id));
                             loadHistory();
                         }
                     });
                 });
             } catch (err) {
-                alert('خطا در بارگذاری. اینترنت یا config را چک کنید.');
+                alert('خطا در بارگذاری تاریخچه. اینترنت یا تنظیمات Firebase را چک کنید.');
             }
-            loading.style.display = 'none';
-        }
-
-        // پر کردن فرم برای ویرایش
-        function fillForm(data) {
-            document.getElementById('electrician_name').value = data.electrician_name || '';
-            // ... تمام فیلدها را پر کن
-            calculateScores();
+            document.getElementById('loading').style.display = 'none';
         }
 
         // ذخیره یا بروزرسانی
         document.getElementById('save-btn').addEventListener('click', async () => {
             calculateScores();
-            const data = { /* تمام داده‌ها مثل قبل */ timestamp: new Date().toLocaleString('fa-IR') };
+            const data = {
+                electrician_name: document.getElementById('electrician_name').value.trim(),
+                membership_code: document.getElementById('membership_code').value,
+                project_address: document.getElementById('project_address').value,
+                project_type: document.querySelector('input[name="project_type"]:checked')?.value || '',
+                project_status: document.querySelector('input[name="project_status"]:checked')?.value || '',
+                visit_datetime: document.getElementById('visit_datetime').value,
+                evaluator1_name: document.getElementById('evaluator1_name').value,
+                evaluator2_name: document.getElementById('evaluator2_name').value,
+                section3_total: document.getElementById('section3_total').value,
+                section4_total: document.getElementById('section4_total').value,
+                section5_total: document.getElementById('section5_total').value,
+                section6_total: document.getElementById('section6_total').value,
+                section7_total: document.getElementById('section7_total').value,
+                total_score: document.getElementById('total_score').value,
+                rank: document.querySelector('input[name="rank"]:checked')?.value || '',
+                comments: document.getElementById('comments').value,
+                timestamp: new Date().toLocaleString('fa-IR')
+            };
 
             try {
-                if (currentDocId) {
-                    await updateDoc(doc(db, "evaluations", currentDocId), data);
-                    alert('ارزیابی بروزرسانی شد 💙');
-                    currentDocId = null;
+                if (currentEditId) {
+                    await updateDoc(doc(db, "evaluations", currentEditId), data);
+                    alert('ارزیابی با موفقیت بروزرسانی شد 💙');
+                    currentEditId = null;
                 } else {
                     await addDoc(evaluationsRef, data);
-                    alert('ارزیابی جدید ذخیره شد 💙');
+                    alert('ارزیابی جدید با موفقیت ذخیره شد 💙');
                 }
                 loadHistory();
                 document.getElementById('evaluation-form').reset();
                 updateDateTime();
                 calculateScores();
             } catch (err) {
-                alert('خطا: ' + err.message);
+                alert('خطا در ذخیره: ' + err.message);
             }
         });
 
-        // PDF کامل و با کیفیت بالا
+        // PDF کامل و با کیفیت
         document.getElementById('pdf-btn').addEventListener('click', async () => {
             const btn = document.getElementById('pdf-btn');
             btn.disabled = true;
             btn.textContent = 'در حال ساخت PDF...';
             window.scrollTo(0, 0);
             const element = document.getElementById('pdf-content');
-            const canvas = await html2canvas(element, {
-                scale: 3,
-                useCORS: true,
-                logging: false,
-                width: element.scrollWidth,
-                height: element.scrollHeight,
-                windowWidth: 1200
-            });
+            const canvas = await html2canvas(element, { scale: 3, useCORS: true, logging: false, width: element.scrollWidth, height: element.scrollHeight });
             const imgData = canvas.toDataURL('image/png');
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const width = pdf.internal.pageSize.getWidth();
-            const height = pdf.internal.pageSize.getHeight();
-            pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-            // اگر خیلی طولانی بود صفحه دوم اضافه کن
-            if (canvas.height > canvas.width * (height / width)) {
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            let imgHeight = canvas.height * pdfWidth / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
                 pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, -height, width, canvas.height * width / canvas.width);
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
             }
+
             pdf.save(`ارزیابی_${document.getElementById('electrician_name').value || 'برقکار'}_${new Date().toLocaleDateString('fa-IR')}.pdf`);
             btn.disabled = false;
-            btn.textContent = 'دانلود PDF';
+            btn.textContent = 'دانلود PDF کامل';
         });
 
         loadHistory();
