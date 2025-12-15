@@ -20,7 +20,10 @@
         input:focus, textarea:focus { outline: none; border-color: #3b82f6; }
         .radio-group { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; }
         .radio-item { display: flex; align-items: center; gap: 0.6rem; background: #eff6ff; padding: 0.7rem 1.2rem; border-radius: 1rem; font-size: 1rem; }
-        button { background: #3b82f6; color: white; padding: 0.9rem 2rem; border-radius: 1rem; font-weight: 600; font-size: 1.1rem; margin: 0.5rem; }
+        button { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 1rem 3rem; border-radius: 1.5rem; font-weight: 600; font-size: 1.2rem; box-shadow: 0 8px 25px rgba(59,130,246,0.4); transition: all 0.3s; margin: 1rem; }
+        button:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(59,130,246,0.5); }
+        .clear-btn { background: linear-gradient(to right, #dc2626, #ef4444); }
+        .clear-btn:hover { box-shadow: 0 12px 35px rgba(239,68,68,0.5); }
         table { width: 100%; border-collapse: separate; border-spacing: 0 0.8rem; }
         th { background: #dbeafe; padding: 0.9rem; text-align: center; font-weight: 600; font-size: 1rem; border-radius: 1rem; }
         td { background: #f8fafc; padding: 0.9rem; border-radius: 1rem; }
@@ -32,7 +35,7 @@
             .card { padding: 1.5rem; }
             h1 { font-size: 1.8rem; }
             h2 { font-size: 1.3rem; }
-            button { padding: 0.8rem 1.8rem; font-size: 1rem; }
+            button { padding: 0.9rem 2.5rem; font-size: 1.1rem; margin: 0.8rem; }
             .radio-item { padding: 0.6rem 1rem; font-size: 0.95rem; }
         }
     </style>
@@ -179,10 +182,9 @@
                 <div class="mt-5"><label>نظر تکمیلی ارزیابان</label><textarea rows="4" id="comments"></textarea></div>
             </div>
 
-            <div class="text-center mt-12 space-x-6">
-                <button type="button" id="save-btn">ذخیره ارزیابی</button>
-                <button type="button" id="pdf-btn">دانلود PDF</button>
-                <button type="button" id="clear-all" class="bg-red-600">پاک کردن همه تاریخچه</button>
+            <div class="text-center mt-16">
+                <button type="button" id="save-and-pdf-btn">ذخیره و دانلود PDF</button>
+                <button type="button" id="clear-all" class="clear-btn">پاک کردن همه تاریخچه</button>
             </div>
         </form>
 
@@ -193,7 +195,7 @@
     </div>
 
     <script>
-        // تاریخ و ساعت در لحظه
+        // تاریخ و ساعت
         function updateDateTime() {
             const field = document.getElementById('visit_datetime');
             if (field) {
@@ -241,9 +243,11 @@
             if (e.target.type === 'radio') calculateScores();
         });
 
-        // ذخیره
-        function saveEvaluation() {
+        // ذخیره + دانلود PDF
+        async function saveAndDownloadPDF() {
             calculateScores();
+
+            // ذخیره
             const data = {
                 electrician_name: document.getElementById('electrician_name').value.trim() || 'نامشخص',
                 total_score: document.getElementById('total_score').value,
@@ -262,12 +266,71 @@
             let history = JSON.parse(localStorage.getItem('evaluations') || '[]');
             history.unshift(data);
             localStorage.setItem('evaluations', JSON.stringify(history));
-
             loadHistory();
+
+            // PDF
+            const btn = document.getElementById('save-and-pdf-btn');
+            btn.disabled = true;
+            btn.textContent = 'در حال ساخت PDF...';
+
+            const inputs = document.querySelectorAll('#evaluation-form input[type="text"], #evaluation-form textarea');
+            const overlays = [];
+
+            inputs.forEach(input => {
+                const rect = input.getBoundingClientRect();
+                const overlay = document.createElement('div');
+                overlay.textContent = input.value;
+                overlay.style.position = 'absolute';
+                overlay.style.top = `${rect.top + window.scrollY}px`;
+                overlay.style.left = `${rect.left + window.scrollX}px`;
+                overlay.style.width = `${rect.width}px`;
+                overlay.style.height = `${rect.height}px`;
+                overlay.style.padding = '0.8rem 1rem';
+                overlay.style.fontSize = '1rem';
+                overlay.style.background = '#f8fafc';
+                overlay.style.border = '1.5px solid #cbd5e1';
+                overlay.style.borderRadius = '0.75rem';
+                overlay.style.pointerEvents = 'none';
+                overlay.style.zIndex = '9999';
+                overlay.style.whiteSpace = 'pre-wrap';
+                document.body.appendChild(overlay);
+                overlays.push(overlay);
+                input.style.visibility = 'hidden';
+            });
+
+            window.scrollTo(0, 0);
+            const element = document.getElementById('pdf-content');
+            const canvas = await html2canvas(element, { scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const width = pdf.internal.pageSize.getWidth();
+            let imgHeight = canvas.height * width / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, width, imgHeight);
+            heightLeft -= pdf.internal.pageSize.getHeight();
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, width, imgHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+            }
+
+            pdf.save(`ارزیابی_${data.electrician_name}_${new Date().toLocaleDateString('fa-IR')}.pdf`);
+
+            overlays.forEach(o => o.remove());
+            inputs.forEach(i => i.style.visibility = 'visible');
+
+            btn.disabled = false;
+            btn.textContent = 'ذخیره و دانلود PDF';
+
             document.getElementById('evaluation-form').reset();
             updateDateTime();
             calculateScores();
-            alert('ارزیابی ذخیره شد و در تاریخچه نمایش داده شد 💙');
+            alert('ارزیابی ذخیره شد و PDF دانلود شد 💙');
         }
 
         // بارگذاری تاریخچه
@@ -298,7 +361,6 @@
             });
         }
 
-        // ویرایش
         window.editEvaluation = function(index) {
             const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
             const data = history[index].fullData;
@@ -321,10 +383,9 @@
             localStorage.setItem('evaluations', JSON.stringify(history));
             loadHistory();
             window.scrollTo(0, 0);
-            alert('فرم برای ویرایش پر شد. تغییرات را اعمال کنید و دوباره ذخیره بزنید.');
+            alert('برای ویرایش پر شد. تغییرات را اعمال کنید و دوباره "ذخیره و دانلود PDF" بزنید.');
         };
 
-        // حذف
         window.deleteEvaluation = function(index) {
             if (confirm('حذف این ارزیابی؟')) {
                 const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
@@ -341,63 +402,7 @@
             }
         });
 
-        document.getElementById('save-btn').addEventListener('click', saveEvaluation);
-
-        // PDF با متن‌های کامل
-        document.getElementById('pdf-btn').addEventListener('click', async () => {
-            const inputs = document.querySelectorAll('#evaluation-form input[type="text"], #evaluation-form textarea');
-            const overlays = [];
-
-            inputs.forEach(input => {
-                const rect = input.getBoundingClientRect();
-                const overlay = document.createElement('div');
-                overlay.textContent = input.value;
-                overlay.style.position = 'absolute';
-                overlay.style.top = `${rect.top + window.scrollY}px`;
-                overlay.style.left = `${rect.left + window.scrollX}px`;
-                overlay.style.width = `${rect.width}px`;
-                overlay.style.height = `${rect.height}px`;
-                overlay.style.padding = '0.8rem 1rem';
-                overlay.style.fontSize = '1rem';
-                overlay.style.background = '#f8fafc';
-                overlay.style.border = '1.5px solid #cbd5e1';
-                overlay.style.borderRadius = '0.75rem';
-                overlay.style.pointerEvents = 'none';
-                overlay.style.zIndex = '9999';
-                overlay.style.whiteSpace = 'pre-wrap';
-                overlay.style.overflow = 'hidden';
-                document.body.appendChild(overlay);
-                overlays.push(overlay);
-                input.style.visibility = 'hidden';
-            });
-
-            window.scrollTo(0, 0);
-            const element = document.getElementById('pdf-content');
-            const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-            const imgData = canvas.toDataURL('image/png');
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const width = pdf.internal.pageSize.getWidth();
-            let imgHeight = canvas.height * width / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            pdf.addImage(imgData, 'PNG', 0, position, width, imgHeight);
-            heightLeft -= pdf.internal.pageSize.getHeight();
-
-            while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, width, imgHeight);
-                heightLeft -= pdf.internal.pageSize.getHeight();
-            }
-
-            pdf.save('ارزیابی_برقکار.pdf');
-
-            // پاک کردن overlayها
-            overlays.forEach(overlay => overlay.remove());
-            inputs.forEach(input => input.style.visibility = 'visible');
-        });
+        document.getElementById('save-and-pdf-btn').addEventListener('click', saveAndDownloadPDF);
 
         loadHistory();
         calculateScores();
