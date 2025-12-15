@@ -3,10 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#3b82f6">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-
     <title>ارزیابی برقکار</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -14,7 +10,7 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600&display=swap');
-        body { font-family: 'Vazirmatn', sans-serif; background: #f8fafc; color: #334155; min-height: 100vh; margin: 0; }
+        body { font-family: 'Vazirmatn', sans-serif; background: #f1f5f9; color: #334155; min-height: 100vh; margin: 0; }
         .container { max-width: 960px; margin: 0 auto; padding: 1rem; }
         .card { background: white; border-radius: 1rem; padding: 1.8rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         h1 { font-size: 2rem; font-weight: 600; text-align: center; color: #1e40af; margin: 2rem 0 1.5rem; }
@@ -24,17 +20,16 @@
         input:focus, textarea:focus { outline: none; border-color: #3b82f6; }
         .radio-group { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; }
         .radio-item { display: flex; align-items: center; gap: 0.6rem; background: #eff6ff; padding: 0.7rem 1.2rem; border-radius: 1rem; font-size: 1rem; }
-        button { background: #3b82f6; color: white; padding: 0.9rem 2rem; border-radius: 1rem; font-weight: 600; font-size: 1.1rem; }
+        button { background: #3b82f6; color: white; padding: 0.9rem 2rem; border-radius: 1rem; font-weight: 600; font-size: 1.1rem; margin: 0.5rem; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 0.8rem; }
         th { background: #dbeafe; padding: 0.9rem; text-align: center; font-weight: 600; font-size: 1rem; border-radius: 1rem; }
         td { background: #f8fafc; padding: 0.9rem; border-radius: 1rem; }
-        .history-item { background: #f8fafc; padding: 1.5rem; border-radius: 1rem; border-right: 5px solid #3b82f6; cursor: pointer; }
-        .history-item:hover { background: #e0f2fe; }
+        .history-item { background: #f8fafc; padding: 1.5rem; border-radius: 1rem; border-right: 5px solid #3b82f6; cursor: pointer; margin-bottom: 1rem; }
         .total-input { background: #dbeafe; font-weight: 600; color: #1e40af; text-align: center; }
         .alert { background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 1rem; font-weight: 600; border-right: 4px solid #ef4444; }
         @media (max-width: 768px) {
             .container { padding: 0.8rem; }
-            .card { padding: 1.5rem; border-radius: 0.9rem; }
+            .card { padding: 1.5rem; }
             h1 { font-size: 1.8rem; }
             h2 { font-size: 1.3rem; }
             button { padding: 0.8rem 1.8rem; font-size: 1rem; }
@@ -47,9 +42,8 @@
         <h1>فرم ارزیابی برقکار</h1>
 
         <form id="evaluation-form" class="card">
-            <!-- تمام بخش‌ها مثل قبل (۱ تا ۸) -->
-
-  <div>
+            <!-- بخش ۱ -->
+            <div>
                 <h2>بخش ۱ | اطلاعات عمومی</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div><label>نام و نام خانوادگی برقکار</label><input type="text" id="electrician_name" required></div>
@@ -65,7 +59,7 @@
                         <div class="radio-item"><input type="radio" name="project_status" value="در حال اجرا"><span>در حال اجرا</span></div>
                         <div class="radio-item"><input type="radio" name="project_status" value="تکمیل‌شده"><span>تکمیل‌شده</span></div>
                     </div></div>
-                    <div class="md:col-span-2"><label>تاریخ و ساعت بازدید</label><input type="text" id="visit_datetime" readonly></div>
+                    <div class="md:col-span-2"><label>تاریخ و ساعت بازدید</label><input type="text" id="visit_datetime" class="total-input" readonly></div>
                 </div>
             </div>
 
@@ -76,7 +70,7 @@
                     <div><label>نام ارزیاب اول</label><input type="text" id="evaluator1_name" required></div>
                     <div><label>نام ارزیاب دوم</label><input type="text" id="evaluator2_name" required></div>
                 </div>
-                <div class="alert mt-4">⛔ ارزیابی باید حتماً توسط دو نفر انجام شود.</div>
+                <div class="alert mt-5">⛔ ارزیابی باید حتماً توسط دو نفر انجام شود.</div>
             </div>
 
             <!-- بخش ۳ -->
@@ -120,7 +114,7 @@
                 <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section4_total" class="total-input" readonly></div>
             </div>
 
-            <!-- بخش ۵ (فقط کیفیت کلی اجرا باقی مانده) -->
+            <!-- بخش ۵ -->
             <div class="mt-10">
                 <h2>بخش ۵ | کیفیت کلی اجرا (۱۵ امتیاز)</h2>
                 <div class="grid grid-cols-1 gap-5">
@@ -149,7 +143,7 @@
                 <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section6_total" class="total-input" readonly></div>
             </div>
 
-            <!-- بخش ۷ (فقط همکاری با کمیته، رفتار حرفه‌ای و سابقه شکایت) -->
+            <!-- بخش ۷ -->
             <div class="mt-10">
                 <h2>بخش ۷ | اعتبار حرفه‌ای و همکاری صنفی (۱۵ امتیاز)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -185,11 +179,10 @@
                 <div class="mt-5"><label>نظر تکمیلی ارزیابان</label><textarea rows="4" id="comments"></textarea></div>
             </div>
 
-            
             <div class="text-center mt-12 space-x-6">
                 <button type="button" id="save-btn">ذخیره ارزیابی</button>
                 <button type="button" id="pdf-btn">دانلود PDF</button>
-                <button type="button" id="clear-btn" class="bg-gray-600">پاک کردن همه</button>
+                <button type="button" id="clear-all" class="bg-red-600">پاک کردن همه تاریخچه</button>
             </div>
         </form>
 
@@ -203,6 +196,7 @@
         const form = document.getElementById('evaluation-form');
         const historyList = document.getElementById('history-list');
 
+        // بروزرسانی تاریخ و ساعت
         function updateDateTime() {
             const now = new Date();
             document.getElementById('visit_datetime').value = now.toLocaleString('fa-IR');
@@ -210,8 +204,8 @@
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
+        // محاسبه امتیازات
         function calculateScores() {
-            // همان محاسبه قبلی
             let s3 = 0;
             for (let i = 1; i <= 5; i++) {
                 const val = document.querySelector(`input[name="tech${i}"]:checked`);
@@ -245,19 +239,29 @@
 
         document.querySelectorAll('input[type="radio"]').forEach(el => el.addEventListener('change', calculateScores));
 
-        function saveToHistory() {
+        // ذخیره در localStorage
+        function saveEvaluation() {
             calculateScores();
             const data = {
                 electrician_name: document.getElementById('electrician_name').value.trim() || 'نامشخص',
                 total_score: document.getElementById('total_score').value,
                 rank: document.querySelector('input[name="rank"]:checked')?.value || '—',
                 timestamp: new Date().toLocaleString('fa-IR'),
-                fullData: formToObject()
+                fullData: {}
             };
 
+            // ذخیره تمام داده‌های فرم
+            const formData = new FormData(form);
+            formData.forEach((value, key) => data.fullData[key] = value);
+            document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(el => {
+                data.fullData[el.name] = el.value;
+            });
+            data.fullData.comments = document.getElementById('comments').value;
+
             let history = JSON.parse(localStorage.getItem('evaluations') || '[]');
-            history.unshift(data); // جدیدترین بالا باشه
+            history.unshift(data);
             localStorage.setItem('evaluations', JSON.stringify(history));
+
             loadHistory();
             form.reset();
             updateDateTime();
@@ -265,13 +269,7 @@
             alert('ارزیابی ذخیره شد');
         }
 
-        function formToObject() {
-            const obj = {};
-            new FormData(form).forEach((value, key) => obj[key] = value);
-            document.querySelectorAll('input[type="radio"]:checked').forEach(el => obj[el.name] = el.value);
-            return obj;
-        }
-
+        // بارگذاری تاریخچه
         function loadHistory() {
             const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
             historyList.innerHTML = '';
@@ -289,8 +287,8 @@
                             <div class="text-gray-600 text-sm mt-1">امتیاز: ${item.total_score} | رتبه: ${item.rank} | ${item.timestamp}</div>
                         </div>
                         <div class="flex gap-3">
-                            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg" onclick="loadForEdit(${index})">ویرایش</button>
-                            <button class="bg-red-600 text-white px-6 py-2 rounded-lg" onclick="deleteItem(${index})">حذف</button>
+                            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg" onclick="editEvaluation(${index})">ویرایش</button>
+                            <button class="bg-red-600 text-white px-6 py-2 rounded-lg" onclick="deleteEvaluation(${index})">حذف</button>
                         </div>
                     </div>
                 `;
@@ -298,27 +296,42 @@
             });
         }
 
-        window.loadForEdit = function(index) {
+        // ویرایش
+        window.editEvaluation = function(index) {
             const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
             const data = history[index].fullData;
-            Object.keys(data).forEach(key => {
-                const el = document.querySelector(`[name="${key}"]`);
-                if (el && el.type === 'radio') {
-                    document.querySelector(`[name="${key}"][value="${data[key]}"]`)?.checked = true;
-                } else if (el) {
-                    el.value = data[key];
+
+            document.getElementById('electrician_name').value = data.electrician_name || '';
+            document.getElementById('membership_code').value = data.membership_code || '';
+            document.getElementById('project_address').value = data.project_address || '';
+            document.getElementById('evaluator1_name').value = data.evaluator1_name || '';
+            document.getElementById('evaluator2_name').value = data.evaluator2_name || '';
+            document.getElementById('experience_years').value = data.experience_years || '';
+            document.getElementById('comments').value = data.comments || '';
+
+            // رادیو باتن‌ها
+            ['project_type', 'project_status', 'quality', 'exp_level', 'cooperation', 'behavior', 'complaint', 'rank'].forEach(name => {
+                if (data[name]) {
+                    document.querySelector(`input[name="${name}"][value="${data[name]}"]`)?.checked = true;
                 }
             });
-            document.getElementById('comments').value = data.comments || '';
+            for (let i = 1; i <= 5; i++) {
+                if (data[`tech${i}`]) document.querySelector(`input[name="tech${i}"][value="${data[`tech${i}`]}"]`)?.checked = true;
+            }
+            for (let i = 1; i <= 4; i++) {
+                if (data[`rule${i}`]) document.querySelector(`input[name="rule${i}"][value="${data[`rule${i}`]}"]`)?.checked = true;
+            }
+
             calculateScores();
             history.splice(index, 1);
             localStorage.setItem('evaluations', JSON.stringify(history));
             loadHistory();
             window.scrollTo(0, 0);
-            alert('برای ویرایش پر شد. تغییرات را اعمال کنید و دوباره ذخیره بزنید.');
+            alert('فرم برای ویرایش پر شد. تغییرات را اعمال کنید و دوباره ذخیره بزنید.');
         };
 
-        window.deleteItem = function(index) {
+        // حذف
+        window.deleteEvaluation = function(index) {
             if (confirm('حذف این ارزیابی؟')) {
                 const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
                 history.splice(index, 1);
@@ -327,15 +340,17 @@
             }
         };
 
-        document.getElementById('save-btn').addEventListener('click', saveToHistory);
-
-        document.getElementById('clear-btn').addEventListener('click', () => {
+        // پاک کردن همه
+        document.getElementById('clear-all').addEventListener('click', () => {
             if (confirm('همه ارزیابی‌ها پاک شود؟')) {
                 localStorage.removeItem('evaluations');
                 loadHistory();
             }
         });
 
+        document.getElementById('save-btn').addEventListener('click', saveEvaluation);
+
+        // دانلود PDF
         document.getElementById('pdf-btn').addEventListener('click', async () => {
             window.scrollTo(0, 0);
             const element = document.getElementById('pdf-content');
