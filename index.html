@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ارزیابی برقکار</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- کتابخانه حرفه‌ای برای PDF با صفحه‌بندی عالی -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
@@ -26,12 +26,12 @@
             font-weight: 700;
             color: #1e40af;
             text-align: center;
-            line-height: 1.8;
+            line-height: 2;
         }
         input:focus, textarea:focus { outline: none; border-color: #3b82f6; }
         .radio-group { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; justify-content: center; }
         .radio-item { display: flex; align-items: center; gap: 0.6rem; background: #eff6ff; padding: 0.7rem 1.2rem; border-radius: 1rem; font-size: 1rem; border: 1px solid #dbeafe; }
-        button { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 1rem 3rem; border-radius: 1.5rem; font-weight: 600; font-size: 1.2rem; box-shadow: 0 8px 25px rgba(59,130,246,0.4); transition: all 0.3s; margin: 1rem; border: none; }
+        button { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 1rem 3rem; border-radius: 1.5rem; font-weight: 600; font-size: 1.2rem; box-shadow: 0 8px 25px rgba(59,130,246,0.4); transition: all 0.3s; margin: 1rem; border: none; cursor: pointer; }
         button:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(59,130,246,0.5); }
         .clear-btn { background: linear-gradient(to right, #dc2626, #ef4444); }
         table { width: 100%; border-collapse: separate; border-spacing: 0 0.8rem; }
@@ -42,7 +42,6 @@
         .history-item { background: #f8fafc; padding: 1.5rem; border-radius: 1rem; border-right: 5px solid #3b82f6; margin-bottom: 1rem; }
         .total-input { background: #dbeafe; font-weight: 700; color: #1e40af; text-align: center; font-size: 1.2rem; }
         .alert { background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 1rem; font-weight: 600; border-right: 4px solid #ef4444; }
-        .pdf-hide { display: block; }
         @media (max-width: 768px) {
             .container { padding: 0.8rem; }
             .card { padding: 1.5rem; }
@@ -55,11 +54,12 @@
 </head>
 <body>
     <div class="container">
-        <div id="pdf-content">
-            <h1>فرم ارزیابی برقکار</h1>
+        <h1>فرم ارزیابی برقکار</h1>
 
-            <form id="evaluation-form" class="card">
-                <!-- تمام بخش‌های ۱ تا ۸ دقیقاً مثل قبل -->
+        <!-- فقط فرم برای PDF -->
+        <div id="form-to-pdf" class="card">
+            <form id="evaluation-form">
+                <!-- بخش ۱ -->
                 <div>
                     <h2>بخش ۱ | اطلاعات عمومی</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -80,6 +80,7 @@
                     </div>
                 </div>
 
+                <!-- بخش ۲ -->
                 <div class="mt-10">
                     <h2>بخش ۲ | مشخصات ارزیابان</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -89,6 +90,7 @@
                     <div class="alert mt-5">⛔ ارزیابی باید حتماً توسط دو نفر انجام شود.</div>
                 </div>
 
+                <!-- بخش ۳ -->
                 <div class="mt-10">
                     <h2>بخش ۳ | ارزیابی فنی و اجرایی (۳۰ امتیاز)</h2>
                     <table>
@@ -114,6 +116,7 @@
                     <div class="mt-5"><label>جمع امتیاز این بخش (از ۳۰)</label><input type="text" id="section3_total" class="total-input" readonly></div>
                 </div>
 
+                <!-- بخش ۴ -->
                 <div class="mt-10">
                     <h2>بخش ۴ | رعایت نرخنامه و اصول صنفی (۲۰ امتیاز)</h2>
                     <table>
@@ -128,6 +131,7 @@
                     <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section4_total" class="total-input" readonly></div>
                 </div>
 
+                <!-- بخش ۵ -->
                 <div class="mt-10">
                     <h2>بخش ۵ | کیفیت کلی اجرا (۱۵ امتیاز)</h2>
                     <div class="grid grid-cols-1 gap-5">
@@ -141,6 +145,7 @@
                     <div class="mt-5"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section5_total" class="total-input" readonly></div>
                 </div>
 
+                <!-- بخش ۶ -->
                 <div class="mt-10">
                     <h2>بخش ۶ | سابقه و تجربه کاری (۲۰ امتیاز)</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -155,6 +160,7 @@
                     <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section6_total" class="total-input" readonly></div>
                 </div>
 
+                <!-- بخش ۷ -->
                 <div class="mt-10">
                     <h2>بخش ۷ | اعتبار حرفه‌ای و همکاری صنفی (۱۵ امتیاز)</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -176,6 +182,7 @@
                     <div class="mt-5"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section7_total" class="total-input" readonly></div>
                 </div>
 
+                <!-- بخش ۸ -->
                 <div class="mt-10">
                     <h2>بخش ۸ | جمع‌بندی نهایی</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -188,22 +195,23 @@
                     </div>
                     <div class="mt-5"><label>نظر تکمیلی ارزیابان</label><textarea rows="4" id="comments"></textarea></div>
                 </div>
-
-                <div class="text-center mt-16 pdf-hide">
-                    <button type="button" id="save-and-pdf-btn">ذخیره و دانلود PDF</button>
-                    <button type="button" id="clear-all" class="clear-btn">پاک کردن همه تاریخچه</button>
-                </div>
             </form>
+        </div>
 
-            <div class="card pdf-hide">
-                <h2>تاریخچه ارزیابی‌ها</h2>
-                <div id="history-list" class="space-y-5"></div>
-            </div>
+        <!-- دکمه‌ها و تاریخچه (در PDF نمایش داده نمی‌شن) -->
+        <div class="text-center mt-10">
+            <button type="button" id="save-and-pdf-btn">ذخیره و دانلود PDF</button>
+            <button type="button" id="clear-all" class="clear-btn">پاک کردن همه تاریخچه</button>
+        </div>
+
+        <div class="card mt-10">
+            <h2>تاریخچه ارزیابی‌ها</h2>
+            <div id="history-list" class="space-y-5"></div>
         </div>
     </div>
 
     <script>
-        // تایمر زنده
+        // تایمر زنده برای تاریخ و ساعت
         function updateDateTime() {
             const field = document.getElementById('visit_datetime');
             if (field) {
@@ -215,6 +223,7 @@
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
+        // محاسبه امتیازات
         function calculateScores() {
             let s3 = 0;
             for (let i = 1; i <= 5; i++) {
@@ -246,9 +255,9 @@
             const total = s3 + s4 + (quality ? parseInt(quality.value) : 0) + (exp ? parseInt(exp.value) : 0) + s7;
             document.getElementById('total_score').value = total;
         }
-
         document.addEventListener('change', calculateScores);
 
+        // ذخیره و ساخت PDF
         async function saveAndDownloadPDF() {
             calculateScores();
 
@@ -278,76 +287,31 @@
             btn.disabled = true;
             btn.textContent = 'در حال ساخت PDF...';
 
-            document.querySelectorAll('.pdf-hide').forEach(el => el.style.display = 'none');
+            const element = document.getElementById('form-to-pdf');
 
-            // افزایش line-height برای حروف فارسی
-            const originalLineHeights = [];
-            document.querySelectorAll('input, textarea, span, div, td, th, label').forEach(el => {
-                originalLineHeights.push({ el, lh: el.style.lineHeight });
-                el.style.lineHeight = '2.4';
-            });
+            const opt = {
+                margin: 10,
+                filename: `ارزیابی_${data.electrician_name || 'برقکار'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
 
-            await new Promise(r => setTimeout(r, 600));
-
-            const element = document.querySelector('#evaluation-form');
-
-            // عرض ثابت معادل A4 (210mm ≈ 794px در 96dpi)
-            const fixedWidth = 794;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                width: fixedWidth,
-                height: element.scrollHeight,
-                windowWidth: fixedWidth,
-                windowHeight: element.scrollHeight,
-                scrollX: 0,
-                scrollY: 0,
-                x: 0,
-                y: 0
-            });
-
-            // بازگرداندن line-height
-            originalLineHeights.forEach(item => item.el.style.lineHeight = item.lh || '');
-
-            document.querySelectorAll('.pdf-hide').forEach(el => el.style.display = 'block');
-
-            const imgData = canvas.toDataURL('image/png');
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-            const margin = 10;
-            const imgWidth = pdfWidth - 2 * margin;
-            const imgHeight = (canvas.height * imgWidth) / fixedWidth;
-
-            let position = margin;
-            pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-            let heightLeft = imgHeight - (pdfHeight - 2 * margin);
-
-            while (heightLeft > 0) {
-                position = -(imgHeight - heightLeft) + margin;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-                heightLeft -= (pdfHeight - 2 * margin);
-            }
-
-            pdf.save(`ارزیابی_${data.electrician_name || 'برقکار'}.pdf`);
+            await html2pdf().set(opt).from(element).save();
 
             btn.disabled = false;
             btn.textContent = 'ذخیره و دانلود PDF';
 
+            // ریست فرم
             document.getElementById('evaluation-form').reset();
             updateDateTime();
             calculateScores();
 
-            alert('PDF با کیفیت عالی و بدون مشکل صفحه‌بندی دانلود شد 💙');
+            alert('ارزیابی ذخیره شد و PDF تمیز دانلود شد! موفق باشی 💙');
         }
 
-        // توابع تاریخچه (همان قبلی‌ها)
+        // تاریخچه
         function loadHistory() {
             const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
             const list = document.getElementById('history-list');
@@ -377,14 +341,14 @@
 
         window.editEvaluation = function(index) {
             const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
-            const data = history[index].fullData;
+            const item = history[index];
 
-            Object.keys(data).forEach(key => {
-                if (key === 'visit_datetime') return;
-                const textInput = document.getElementById(key);
-                if (textInput) textInput.value = data[key] || '';
+            // پر کردن فرم
+            Object.keys(item.fullData).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) el.value = item.fullData[key];
 
-                const radio = document.querySelector(`input[name="${key}"][value="${data[key]}"]`);
+                const radio = document.querySelector(`input[name="${key}"][value="${item.fullData[key]}"]`);
                 if (radio) radio.checked = true;
             });
 
@@ -396,7 +360,7 @@
         };
 
         window.deleteEvaluation = function(index) {
-            if (confirm('حذف این ارزیابی؟')) {
+            if (confirm('این ارزیابی حذف شود؟')) {
                 const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
                 history.splice(index, 1);
                 localStorage.setItem('evaluations', JSON.stringify(history));
@@ -405,7 +369,7 @@
         };
 
         document.getElementById('clear-all').addEventListener('click', () => {
-            if (confirm('همه ارزیابی‌ها پاک شود؟')) {
+            if (confirm('همه تاریخچه پاک شود؟')) {
                 localStorage.removeItem('evaluations');
                 loadHistory();
             }
@@ -413,6 +377,7 @@
 
         document.getElementById('save-and-pdf-btn').addEventListener('click', saveAndDownloadPDF);
 
+        // شروع
         loadHistory();
         calculateScores();
     </script>
