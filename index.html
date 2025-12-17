@@ -26,10 +26,9 @@
             font-weight: 700;
             color: #1e40af;
             text-align: center;
-            padding-bottom: 19px;
-            line-height: 1.8; /* کمک به نمایش بهتر حروف فارسی */
+            line-height: 1.8;
         }
-        input:focus, textarea:focus { outline: none; border-color: #3b82f6; padding-bottom: 15px; }
+        input:focus, textarea:focus { outline: none; border-color: #3b82f6; }
         .radio-group { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; justify-content: center; }
         .radio-item { display: flex; align-items: center; gap: 0.6rem; background: #eff6ff; padding: 0.7rem 1.2rem; border-radius: 1rem; font-size: 1rem; border: 1px solid #dbeafe; }
         button { background: linear-gradient(to right, #2563eb, #3b82f6); color: white; padding: 1rem 3rem; border-radius: 1.5rem; font-weight: 600; font-size: 1.2rem; box-shadow: 0 8px 25px rgba(59,130,246,0.4); transition: all 0.3s; margin: 1rem; border: none; }
@@ -43,7 +42,11 @@
         .history-item { background: #f8fafc; padding: 1.5rem; border-radius: 1rem; border-right: 5px solid #3b82f6; margin-bottom: 1rem; }
         .total-input { background: #dbeafe; font-weight: 700; color: #1e40af; text-align: center; font-size: 1.2rem; }
         .alert { background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 1rem; font-weight: 600; border-right: 4px solid #ef4444; }
-        .pdf-hide { display: block; }
+        .pdf-only { display: none; } /* فقط در PDF نمایش داده بشه */
+        @media print {
+            .pdf-hide { display: none !important; }
+            .pdf-only { display: block !important; }
+        }
         @media (max-width: 768px) {
             .container { padding: 0.8rem; }
             .card { padding: 1.5rem; }
@@ -55,186 +58,173 @@
     </style>
 </head>
 <body>
-    <div class="container" id="pdf-content">
-        <h1>فرم ارزیابی برقکار</h1>
+    <div class="container">
+        <div id="pdf-content">
+            <h1>فرم ارزیابی برقکار</h1>
 
-        <form id="evaluation-form" class="card">
-            <!-- بخش‌های فرم مثل قبل -->
-            <!-- (تمام بخش‌های ۱ تا ۸ دقیقاً همان قبلی هستند، فقط برای کوتاه شدن اینجا کپی نکردم) -->
-            <!-- تمام HTML فرم شما بدون تغییر مانده است -->
-            <!-- فقط یک خط اضافه شده در input تاریخ: readonly و id درست -->
-
-            <div>
-                <h2>بخش ۱ | اطلاعات عمومی</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div><label>نام و نام خانوادگی برقکار</label><input type="text" id="electrician_name" required></div>
-                    <div><label>کد عضویت / شماره تماس</label><input type="text" id="membership_code"></div>
-                    <div class="md:col-span-2"><label>نشانی پروژه مورد بازدید</label><input type="text" id="project_address"></div>
-                    <div><label>نوع پروژه</label><div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="project_type" value="مسکونی"><span>مسکونی</span></div>
-                        <div class="radio-item"><input type="radio" name="project_type" value="تجاری"><span>تجاری</span></div>
-                        <div class="radio-item"><input type="radio" name="project_type" value="اداری"><span>اداری</span></div>
-                        <div class="radio-item"><input type="radio" name="project_type" value="صنعتی سبک"><span>صنعتی سبک</span></div>
-                    </div></div>
-                    <div><label>وضعیت پروژه</label><div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="project_status" value="در حال اجرا"><span>در حال اجرا</span></div>
-                        <div class="radio-item"><input type="radio" name="project_status" value="تکمیل‌شده"><span>تکمیل‌شده</span></div>
-                    </div></div>
-                    <div class="md:col-span-2"><label>تاریخ و ساعت بازدید</label><input type="text" id="visit_datetime" class="total-input" readonly></div>
+            <form id="evaluation-form" class="card">
+                <!-- بخش ۱ -->
+                <div>
+                    <h2>بخش ۱ | اطلاعات عمومی</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div><label>نام و نام خانوادگی برقکار</label><input type="text" id="electrician_name" required></div>
+                        <div><label>کد عضویت / شماره تماس</label><input type="text" id="membership_code"></div>
+                        <div class="md:col-span-2"><label>نشانی پروژه مورد بازدید</label><input type="text" id="project_address"></div>
+                        <div><label>نوع پروژه</label><div class="radio-group">
+                            <div class="radio-item"><input type="radio" name="project_type" value="مسکونی"><span>مسکونی</span></div>
+                            <div class="radio-item"><input type="radio" name="project_type" value="تجاری"><span>تجاری</span></div>
+                            <div class="radio-item"><input type="radio" name="project_type" value="اداری"><span>اداری</span></div>
+                            <div class="radio-item"><input type="radio" name="project_type" value="صنعتی سبک"><span>صنعتی سبک</span></div>
+                        </div></div>
+                        <div><label>وضعیت پروژه</label><div class="radio-group">
+                            <div class="radio-item"><input type="radio" name="project_status" value="در حال اجرا"><span>در حال اجرا</span></div>
+                            <div class="radio-item"><input type="radio" name="project_status" value="تکمیل‌شده"><span>تکمیل‌شده</span></div>
+                        </div></div>
+                        <div class="md:col-span-2"><label>تاریخ و ساعت بازدید</label><input type="text" id="visit_datetime" class="total-input" readonly></div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- بقیه بخش‌ها دقیقاً مثل کد اصلی شما -->
-            <!-- (بخش ۲ تا ۸ را همان‌طور که بود کپی کنید) -->
-            
-            <!-- بخش ۲ -->
-            <div class="mt-10">
-                <h2>بخش ۲ | مشخصات ارزیابان</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div><label>نام ارزیاب اول</label><input type="text" id="evaluator1_name" required></div>
-                    <div><label>نام ارزیاب دوم</label><input type="text" id="evaluator2_name" required></div>
+                <!-- بخش ۲ -->
+                <div class="mt-10">
+                    <h2>بخش ۲ | مشخصات ارزیابان</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div><label>نام ارزیاب اول</label><input type="text" id="evaluator1_name" required></div>
+                        <div><label>نام ارزیاب دوم</label><input type="text" id="evaluator2_name" required></div>
+                    </div>
+                    <div class="alert mt-5">⛔ ارزیابی باید حتماً توسط دو نفر انجام شود.</div>
                 </div>
-                <div class="alert mt-5">⛔ ارزیابی باید حتماً توسط دو نفر انجام شود.</div>
-            </div>
 
-            <!-- بخش ۳ -->
-            <div class="mt-10">
-                <h2>بخش ۳ | ارزیابی فنی و اجرایی (۳۰ امتیاز)</h2>
-                <table>
-                    <thead><tr><th>ردیف</th><th>شاخص</th><th colspan="6">امتیاز (۰ تا ۵)</th></tr></thead>
-                    <tbody>
-                        <tr><td>۱</td><td>رعایت اصول سیم‌کشی</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech1" value="0">۰</div><div class="radio-item"><input type="radio" name="tech1" value="1">۱</div><div class="radio-item"><input type="radio" name="tech1" value="2">۲</div><div class="radio-item"><input type="radio" name="tech1" value="3">۳</div><div class="radio-item"><input type="radio" name="tech1" value="4">۴</div><div class="radio-item"><input type="radio" name="tech1" value="5">۵</div>
-                        </td></tr>
-                        <tr><td>۲</td><td>کیفیت تابلو برق</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech2" value="0">۰</div><div class="radio-item"><input type="radio" name="tech2" value="1">۱</div><div class="radio-item"><input type="radio" name="tech2" value="2">۲</div><div class="radio-item"><input type="radio" name="tech2" value="3">۳</div><div class="radio-item"><input type="radio" name="tech2" value="4">۴</div><div class="radio-item"><input type="radio" name="tech2" value="5">۵</div>
-                        </td></tr>
-                        <tr><td>۳</td><td>ایمنی اجرا (اتصالات، ارت، حفاظت)</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech3" value="0">۰</div><div class="radio-item"><input type="radio" name="tech3" value="1">۱</div><div class="radio-item"><input type="radio" name="tech3" value="2">۲</div><div class="radio-item"><input type="radio" name="tech3" value="3">۳</div><div class="radio-item"><input type="radio" name="tech3" value="4">۴</div><div class="radio-item"><input type="radio" name="tech3" value="5">۵</div>
-                        </td></tr>
-                        <tr><td>۴</td><td>نظم، تمیزی و زیبایی کار</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech4" value="0">۰</div><div class="radio-item"><input type="radio" name="tech4" value="1">۱</div><div class="radio-item"><input type="radio" name="tech4" value="2">۲</div><div class="radio-item"><input type="radio" name="tech4" value="3">۳</div><div class="radio-item"><input type="radio" name="tech4" value="4">۴</div><div class="radio-item"><input type="radio" name="tech4" value="5">۵</div>
-                        </td></tr>
-                        <tr><td>۵</td><td>رعایت حداقل‌های مبحث ۱۳</td><td class="radio-group">
-                            <div class="radio-item"><input type="radio" name="tech5" value="0">۰</div><div class="radio-item"><input type="radio" name="tech5" value="1">۱</div><div class="radio-item"><input type="radio" name="tech5" value="2">۲</div><div class="radio-item"><input type="radio" name="tech5" value="3">۳</div><div class="radio-item"><input type="radio" name="tech5" value="4">۴</div><div class="radio-item"><input type="radio" name="tech5" value="5">۵</div>
-                        </td></tr>
-                    </tbody>
-                </table>
-                <div class="mt-5"><label>جمع امتیاز این بخش (از ۳۰)</label><input type="text" id="section3_total" class="total-input" readonly></div>
-            </div>
-
-            <!-- بخش ۴ -->
-            <div class="mt-10">
-                <h2>بخش ۴ | رعایت نرخنامه و اصول صنفی (۲۰ امتیاز)</h2>
-                <table>
-                    <thead><tr><th>ردیف</th><th>مورد بررسی</th><th>وضعیت</th></tr></thead>
-                    <tbody>
-                        <tr><td>۱</td><td>قرارداد یا توافق مشخص دارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule1" value="5">بله</div><div class="radio-item"><input type="radio" name="rule1" value="0">خیر</div></td></tr>
-                        <tr><td>۲</td><td>قیمت مطابق نرخنامه کمیته</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule2" value="5">بله</div><div class="radio-item"><input type="radio" name="rule2" value="0">خیر</div></td></tr>
-                        <tr><td>۳</td><td>عدم قیمت‌شکنی</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule3" value="5">بله</div><div class="radio-item"><input type="radio" name="rule3" value="0">خیر</div></td></tr>
-                        <tr><td>۴</td><td>شکایت مالی ثبت‌شده ندارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule4" value="5">بله</div><div class="radio-item"><input type="radio" name="rule4" value="0">خیر</div></td></tr>
-                    </tbody>
-                </table>
-                <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section4_total" class="total-input" readonly></div>
-            </div>
-
-            <!-- بخش ۵ -->
-            <div class="mt-10">
-                <h2>بخش ۵ | کیفیت کلی اجرا (۱۵ امتیاز)</h2>
-                <div class="grid grid-cols-1 gap-5">
-                    <div><label>کیفیت کلی اجرا</label><div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="quality" value="0">ضعیف</div>
-                        <div class="radio-item"><input type="radio" name="quality" value="5">متوسط</div>
-                        <div class="radio-item"><input type="radio" name="quality" value="10">خوب</div>
-                        <div class="radio-item"><input type="radio" name="quality" value="15">عالی</div>
-                    </div></div>
+                <!-- بخش ۳ -->
+                <div class="mt-10">
+                    <h2>بخش ۳ | ارزیابی فنی و اجرایی (۳۰ امتیاز)</h2>
+                    <table>
+                        <thead><tr><th>ردیف</th><th>شاخص</th><th colspan="6">امتیاز (۰ تا ۵)</th></tr></thead>
+                        <tbody>
+                            <tr><td>۱</td><td>رعایت اصول سیم‌کشی</td><td class="radio-group">
+                                <div class="radio-item"><input type="radio" name="tech1" value="0">۰</div><div class="radio-item"><input type="radio" name="tech1" value="1">۱</div><div class="radio-item"><input type="radio" name="tech1" value="2">۲</div><div class="radio-item"><input type="radio" name="tech1" value="3">۳</div><div class="radio-item"><input type="radio" name="tech1" value="4">۴</div><div class="radio-item"><input type="radio" name="tech1" value="5">۵</div>
+                            </td></tr>
+                            <tr><td>۲</td><td>کیفیت تابلو برق</td><td class="radio-group">
+                                <div class="radio-item"><input type="radio" name="tech2" value="0">۰</div><div class="radio-item"><input type="radio" name="tech2" value="1">۱</div><div class="radio-item"><input type="radio" name="tech2" value="2">۲</div><div class="radio-item"><input type="radio" name="tech2" value="3">۳</div><div class="radio-item"><input type="radio" name="tech2" value="4">۴</div><div class="radio-item"><input type="radio" name="tech2" value="5">۵</div>
+                            </td></tr>
+                            <tr><td>۳</td><td>ایمنی اجرا (اتصالات، ارت، حفاظت)</td><td class="radio-group">
+                                <div class="radio-item"><input type="radio" name="tech3" value="0">۰</div><div class="radio-item"><input type="radio" name="tech3" value="1">۱</div><div class="radio-item"><input type="radio" name="tech3" value="2">۲</div><div class="radio-item"><input type="radio" name="tech3" value="3">۳</div><div class="radio-item"><input type="radio" name="tech3" value="4">۴</div><div class="radio-item"><input type="radio" name="tech3" value="5">۵</div>
+                            </td></tr>
+                            <tr><td>۴</td><td>نظم، تمیزی و زیبایی کار</td><td class="radio-group">
+                                <div class="radio-item"><input type="radio" name="tech4" value="0">۰</div><div class="radio-item"><input type="radio" name="tech4" value="1">۱</div><div class="radio-item"><input type="radio" name="tech4" value="2">۲</div><div class="radio-item"><input type="radio" name="tech4" value="3">۳</div><div class="radio-item"><input type="radio" name="tech4" value="4">۴</div><div class="radio-item"><input type="radio" name="tech4" value="5">۵</div>
+                            </td></tr>
+                            <tr><td>۵</td><td>رعایت حداقل‌های مبحث ۱۳</td><td class="radio-group">
+                                <div class="radio-item"><input type="radio" name="tech5" value="0">۰</div><div class="radio-item"><input type="radio" name="tech5" value="1">۱</div><div class="radio-item"><input type="radio" name="tech5" value="2">۲</div><div class="radio-item"><input type="radio" name="tech5" value="3">۳</div><div class="radio-item"><input type="radio" name="tech5" value="4">۴</div><div class="radio-item"><input type="radio" name="tech5" value="5">۵</div>
+                            </td></tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-5"><label>جمع امتیاز این بخش (از ۳۰)</label><input type="text" id="section3_total" class="total-input" readonly></div>
                 </div>
-                <div class="mt-5"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section5_total" class="total-input" readonly></div>
-            </div>
 
-            <!-- بخش ۶ -->
-            <div class="mt-10">
-                <h2>بخش ۶ | سابقه و تجربه کاری (۲۰ امتیاز)</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div><label>سابقه کاری اعلام‌شده (سال)</label><input type="text" id="experience_years"></div>
-                    <div><label>سطح تجربه</label><div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="exp_level" value="5">کمتر از ۵ سال</div>
-                        <div class="radio-item"><input type="radio" name="exp_level" value="10">۵ تا ۱۰ سال</div>
-                        <div class="radio-item"><input type="radio" name="exp_level" value="15">۱۰ تا ۲۰ سال</div>
-                        <div class="radio-item"><input type="radio" name="exp_level" value="20">بیش از ۲۰ سال</div>
-                    </div></div>
+                <!-- بخش ۴ -->
+                <div class="mt-10">
+                    <h2>بخش ۴ | رعایت نرخنامه و اصول صنفی (۲۰ امتیاز)</h2>
+                    <table>
+                        <thead><tr><th>ردیف</th><th>مورد بررسی</th><th>وضعیت</th></tr></thead>
+                        <tbody>
+                            <tr><td>۱</td><td>قرارداد یا توافق مشخص دارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule1" value="5">بله</div><div class="radio-item"><input type="radio" name="rule1" value="0">خیر</div></td></tr>
+                            <tr><td>۲</td><td>قیمت مطابق نرخنامه کمیته</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule2" value="5">بله</div><div class="radio-item"><input type="radio" name="rule2" value="0">خیر</div></td></tr>
+                            <tr><td>۳</td><td>عدم قیمت‌شکنی</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule3" value="5">بله</div><div class="radio-item"><input type="radio" name="rule3" value="0">خیر</div></td></tr>
+                            <tr><td>۴</td><td>شکایت مالی ثبت‌شده ندارد</td><td class="radio-group"><div class="radio-item"><input type="radio" name="rule4" value="5">بله</div><div class="radio-item"><input type="radio" name="rule4" value="0">خیر</div></td></tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section4_total" class="total-input" readonly></div>
                 </div>
-                <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section6_total" class="total-input" readonly></div>
-            </div>
 
-            <!-- بخش ۷ -->
-            <div class="mt-10">
-                <h2>بخش ۷ | اعتبار حرفه‌ای و همکاری صنفی (۱۵ امتیاز)</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div><label>همکاری با کمیته</label><div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="cooperation" value="0">ضعیف</div>
-                        <div class="radio-item"><input type="radio" name="cooperation" value="3">متوسط</div>
-                        <div class="radio-item"><input type="radio" name="cooperation" value="5">خوب</div>
-                    </div></div>
-                    <div><label>رفتار حرفه‌ای در کارگاه</label><div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="behavior" value="0">ضعیف</div>
-                        <div class="radio-item"><input type="radio" name="behavior" value="3">متوسط</div>
-                        <div class="radio-item"><input type="radio" name="behavior" value="5">خوب</div>
-                    </div></div>
-                    <div><label>سابقه شکایت</label><div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="complaint" value="0">دارد</div>
-                        <div class="radio-item"><input type="radio" name="complaint" value="5">ندارد</div>
-                    </div></div>
+                <!-- بخش ۵ -->
+                <div class="mt-10">
+                    <h2>بخش ۵ | کیفیت کلی اجرا (۱۵ امتیاز)</h2>
+                    <div class="grid grid-cols-1 gap-5">
+                        <div><label>کیفیت کلی اجرا</label><div class="radio-group">
+                            <div class="radio-item"><input type="radio" name="quality" value="0">ضعیف</div>
+                            <div class="radio-item"><input type="radio" name="quality" value="5">متوسط</div>
+                            <div class="radio-item"><input type="radio" name="quality" value="10">خوب</div>
+                            <div class="radio-item"><input type="radio" name="quality" value="15">عالی</div>
+                        </div></div>
+                    </div>
+                    <div class="mt-5"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section5_total" class="total-input" readonly></div>
                 </div>
-                <div class="mt-5"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section7_total" class="total-input" readonly></div>
-            </div>
 
-            <!-- بخش ۸ -->
-            <div class="mt-10">
-                <h2>بخش ۸ | جمع‌بندی نهایی</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div><label>جمع کل امتیازات (از ۱۰۰)</label><input type="text" id="total_score" class="total-input" readonly></div>
-                    <div><label>رتبه پیشنهادی</label><div class="radio-group">
-                        <div class="radio-item"><input type="radio" name="rank" value="A">A</div>
-                        <div class="radio-item"><input type="radio" name="rank" value="B">B</div>
-                        <div class="radio-item"><input type="radio" name="rank" value="C">C</div>
-                    </div></div>
+                <!-- بخش ۶ -->
+                <div class="mt-10">
+                    <h2>بخش ۶ | سابقه و تجربه کاری (۲۰ امتیاز)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div><label>سابقه کاری اعلام‌شده (سال)</label><input type="text" id="experience_years"></div>
+                        <div><label>سطح تجربه</label><div class="radio-group">
+                            <div class="radio-item"><input type="radio" name="exp_level" value="5">کمتر از ۵ سال</div>
+                            <div class="radio-item"><input type="radio" name="exp_level" value="10">۵ تا ۱۰ سال</div>
+                            <div class="radio-item"><input type="radio" name="exp_level" value="15">۱۰ تا ۲۰ سال</div>
+                            <div class="radio-item"><input type="radio" name="exp_level" value="20">بیش از ۲۰ سال</div>
+                        </div></div>
+                    </div>
+                    <div class="mt-5"><label>امتیاز این بخش (۰ تا ۲۰)</label><input type="text" id="section6_total" class="total-input" readonly></div>
                 </div>
-                <div class="mt-5"><label>نظر تکمیلی ارزیابان</label><textarea rows="4" id="comments"></textarea></div>
-            </div>
-            <!-- فقط بخش دکمه‌ها -->
-            <div class="text-center mt-16 pdf-hide">
-                <button type="button" id="save-and-pdf-btn">ذخیره و دانلود PDF</button>
-                <button type="button" id="clear-all" class="clear-btn">پاک کردن همه تاریخچه</button>
-            </div>
-        </form>
 
-        <div class="card pdf-hide">
-            <h2>تاریخچه ارزیابی‌ها</h2>
-            <div id="history-list" class="space-y-5"></div>
+                <!-- بخش ۷ -->
+                <div class="mt-10">
+                    <h2>بخش ۷ | اعتبار حرفه‌ای و همکاری صنفی (۱۵ امتیاز)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div><label>همکاری با کمیته</label><div class="radio-group">
+                            <div class="radio-item"><input type="radio" name="cooperation" value="0">ضعیف</div>
+                            <div class="radio-item"><input type="radio" name="cooperation" value="3">متوسط</div>
+                            <div class="radio-item"><input type="radio" name="cooperation" value="5">خوب</div>
+                        </div></div>
+                        <div><label>رفتار حرفه‌ای در کارگاه</label><div class="radio-group">
+                            <div class="radio-item"><input type="radio" name="behavior" value="0">ضعیف</div>
+                            <div class="radio-item"><input type="radio" name="behavior" value="3">متوسط</div>
+                            <div class="radio-item"><input type="radio" name="behavior" value="5">خوب</div>
+                        </div></div>
+                        <div><label>سابقه شکایت</label><div class="radio-group">
+                            <div class="radio-item"><input type="radio" name="complaint" value="0">دارد</div>
+                            <div class="radio-item"><input type="radio" name="complaint" value="5">ندارد</div>
+                        </div></div>
+                    </div>
+                    <div class="mt-5"><label>امتیاز این بخش (۰ تا ۱۵)</label><input type="text" id="section7_total" class="total-input" readonly></div>
+                </div>
+
+                <!-- بخش ۸ -->
+                <div class="mt-10">
+                    <h2>بخش ۸ | جمع‌بندی نهایی</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div><label>جمع کل امتیازات (از ۱۰۰)</label><input type="text" id="total_score" class="total-input" readonly></div>
+                        <div><label>رتبه پیشنهادی</label><div class="radio-group">
+                            <div class="radio-item"><input type="radio" name="rank" value="A">A</div>
+                            <div class="radio-item"><input type="radio" name="rank" value="B">B</div>
+                            <div class="radio-item"><input type="radio" name="rank" value="C">C</div>
+                        </div></div>
+                    </div>
+                    <div class="mt-5"><label>نظر تکمیلی ارزیابان</label><textarea rows="4" id="comments"></textarea></div>
+                </div>
+
+                <!-- دکمه‌ها فقط در صفحه نمایش، در PDF مخفی -->
+                <div class="text-center mt-16 pdf-hide">
+                    <button type="button" id="save-and-pdf-btn">ذخیره و دانلود PDF</button>
+                    <button type="button" id="clear-all" class="clear-btn">پاک کردن همه تاریخچه</button>
+                </div>
+            </form>
+
+            <!-- بخش تاریخچه فقط در صفحه نمایش -->
+            <div class="card pdf-hide">
+                <h2>تاریخچه ارزیابی‌ها</h2>
+                <div id="history-list" class="space-y-5"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // تایمر زنده برای تاریخ و ساعت
+        // تایمر زنده
         function updateDateTime() {
             const field = document.getElementById('visit_datetime');
             if (field) {
                 const now = new Date();
-                const options = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                };
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
                 field.value = now.toLocaleString('fa-IR', options);
             }
         }
-
-        // آپدیت اولیه و هر ثانیه
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
@@ -296,7 +286,7 @@
             localStorage.setItem('evaluations', JSON.stringify(history));
             loadHistory();
 
-            // آماده‌سازی PDF
+            // ساخت PDF فقط از فرم
             const btn = document.getElementById('save-and-pdf-btn');
             btn.disabled = true;
             btn.textContent = 'در حال ساخت PDF...';
@@ -304,36 +294,35 @@
             // مخفی کردن دکمه‌ها و تاریخچه
             document.querySelectorAll('.pdf-hide').forEach(el => el.style.display = 'none');
 
-            // افزایش موقت line-height برای جلوگیری از بریده شدن حروف فارسی
+            // افزایش line-height برای حروف فارسی
             const originalLineHeights = [];
-            document.querySelectorAll('input, textarea, p, span, div, td, th').forEach(el => {
+            document.querySelectorAll('input, textarea, span, div, td, th, label').forEach(el => {
                 originalLineHeights.push({ el, lh: el.style.lineHeight });
-                el.style.lineHeight = '2.2';
+                el.style.lineHeight = '2.4';
             });
 
-            await new Promise(r => setTimeout(r, 600)); // کمی صبر برای اعمال تغییرات
+            await new Promise(r => setTimeout(r, 600));
 
-            const element = document.getElementById('pdf-content');
+            // فقط فرم رو به canvas تبدیل می‌کنیم (بدون دکمه و تاریخچه)
+            const formElement = document.querySelector('#evaluation-form');
 
-            const canvas = await html2canvas(element, {
-                scale: 3,                    // کیفیت بالاتر
+            const canvas = await html2canvas(formElement, {
+                scale: 3,
                 useCORS: true,
-                backgroundColor: '#f1f5f9',
+                backgroundColor: '#ffffff',
                 logging: false,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight,
-                width: element.scrollWidth,
-                height: element.scrollHeight,
+                width: formElement.scrollWidth,
+                height: formElement.scrollHeight,
+                windowWidth: formElement.scrollWidth,
+                windowHeight: formElement.scrollHeight,
                 scrollX: 0,
                 scrollY: 0
             });
 
             // بازگرداندن line-height
-            originalLineHeights.forEach(item => {
-                item.el.style.lineHeight = item.lh || '';
-            });
+            originalLineHeights.forEach(item => item.el.style.lineHeight = item.lh || '');
 
-            // نمایش دوباره دکمه‌ها
+            // نمایش دوباره بخش‌های مخفی
             document.querySelectorAll('.pdf-hide').forEach(el => el.style.display = 'block');
 
             const imgData = canvas.toDataURL('image/png');
@@ -342,21 +331,19 @@
 
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
-            const margin = 10;
+            const margin = 15;
             const imgWidth = pageWidth - 2 * margin;
             const imgHeight = canvas.height * imgWidth / canvas.width;
 
-            let heightLeft = imgHeight;
             let position = margin;
-
             pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight - 2 * margin;
+            let heightLeft = imgHeight - (pageHeight - 2 * margin);
 
             while (heightLeft > 0) {
-                position = - (imgHeight - heightLeft) + margin;
+                position = -(imgHeight - heightLeft) + margin;
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight - 2 * margin;
+                heightLeft -= (pageHeight - 2 * margin);
             }
 
             pdf.save(`ارزیابی_${data.electrician_name || 'برقکار'}.pdf`);
@@ -364,15 +351,14 @@
             btn.disabled = false;
             btn.textContent = 'ذخیره و دانلود PDF';
 
-            // ریست فرم
             document.getElementById('evaluation-form').reset();
             updateDateTime();
             calculateScores();
 
-            alert('ارزیابی با موفقیت ذخیره و PDF دانلود شد 💙');
+            alert('ارزیابی ذخیره شد و PDF حرفه‌ای دانلود شد 💙');
         }
 
-        // بقیه توابع history، edit، delete و clear-all دقیقاً مثل قبل
+        // توابع تاریخچه
         function loadHistory() {
             const history = JSON.parse(localStorage.getItem('evaluations') || '[]');
             const list = document.getElementById('history-list');
@@ -407,7 +393,7 @@
             Object.keys(data).forEach(key => {
                 if (key === 'visit_datetime') return;
                 const textInput = document.getElementById(key);
-                if (textInput) textInput.value = data[key];
+                if (textInput) textInput.value = data[key] || '';
 
                 const radio = document.querySelector(`input[name="${key}"][value="${data[key]}"]`);
                 if (radio) radio.checked = true;
